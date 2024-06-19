@@ -10,13 +10,16 @@ importers:
     dependencies:
       '@inertiajs/vue3':
         specifier: ^1.2.0
-        version: 1.2.0(vue@3.4.29)
+        version: 1.2.0(vue@3.4.29(typescript@5.4.5))
       '@vitejs/plugin-vue':
         specifier: ^5.0.5
-        version: 5.0.5(vite@5.3.1)(vue@3.4.29)
+        version: 5.0.5(vite@5.3.1)(vue@3.4.29(typescript@5.4.5))
+      typescript:
+        specifier: ^5.4.5
+        version: 5.4.5
       vue:
         specifier: ^3.4.29
-        version: 3.4.29
+        version: 3.4.29(typescript@5.4.5)
     devDependencies:
       axios:
         specifier: ^1.6.4
@@ -481,6 +484,11 @@ packages:
     resolution: {integrity: sha512-/OaKK0xYrs3DmxRYqL/yDc+FxFUVYhDlXMhRmv3z915w2HF1tnN1omB354j8VUGO/hbRzyD6Y3sA7v7GS/ceog==}
     engines: {node: '>=4'}
 
+  typescript@5.4.5:
+    resolution: {integrity: sha512-vcI4UpRgg81oIRUFwR0WSIHKt11nJ7SAVlYNIu+QpqeyXP+gpQJy/Z4+F0aGxSE4MqwjyXvW/TzgkLAx2AGHwQ==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+
   vite-plugin-full-reload@1.1.0:
     resolution: {integrity: sha512-3cObNDzX6DdfhD9E7kf6w2mNunFpD7drxyNgHLw+XwIYAgb+Xt16SEXo0Up4VH+TMf3n+DSVJZtW2POBGcBYAA==}
 
@@ -614,12 +622,12 @@ snapshots:
     transitivePeerDependencies:
       - debug
 
-  '@inertiajs/vue3@1.2.0(vue@3.4.29)':
+  '@inertiajs/vue3@1.2.0(vue@3.4.29(typescript@5.4.5))':
     dependencies:
       '@inertiajs/core': 1.2.0
       lodash.clonedeep: 4.5.0
       lodash.isequal: 4.5.0
-      vue: 3.4.29
+      vue: 3.4.29(typescript@5.4.5)
     transitivePeerDependencies:
       - debug
 
@@ -675,10 +683,10 @@ snapshots:
 
   '@types/estree@1.0.5': {}
 
-  '@vitejs/plugin-vue@5.0.5(vite@5.3.1)(vue@3.4.29)':
+  '@vitejs/plugin-vue@5.0.5(vite@5.3.1)(vue@3.4.29(typescript@5.4.5))':
     dependencies:
       vite: 5.3.1
-      vue: 3.4.29
+      vue: 3.4.29(typescript@5.4.5)
 
   '@vue/compiler-core@3.4.29':
     dependencies:
@@ -726,11 +734,11 @@ snapshots:
       '@vue/shared': 3.4.29
       csstype: 3.1.3
 
-  '@vue/server-renderer@3.4.29(vue@3.4.29)':
+  '@vue/server-renderer@3.4.29(vue@3.4.29(typescript@5.4.5))':
     dependencies:
       '@vue/compiler-ssr': 3.4.29
       '@vue/shared': 3.4.29
-      vue: 3.4.29
+      vue: 3.4.29(typescript@5.4.5)
 
   '@vue/shared@3.4.29': {}
 
@@ -925,6 +933,8 @@ snapshots:
 
   to-fast-properties@2.0.0: {}
 
+  typescript@5.4.5: {}
+
   vite-plugin-full-reload@1.1.0:
     dependencies:
       picocolors: 1.0.1
@@ -938,10 +948,12 @@ snapshots:
     optionalDependencies:
       fsevents: 2.3.3
 
-  vue@3.4.29:
+  vue@3.4.29(typescript@5.4.5):
     dependencies:
       '@vue/compiler-dom': 3.4.29
       '@vue/compiler-sfc': 3.4.29
       '@vue/runtime-dom': 3.4.29
-      '@vue/server-renderer': 3.4.29(vue@3.4.29)
+      '@vue/server-renderer': 3.4.29(vue@3.4.29(typescript@5.4.5))
       '@vue/shared': 3.4.29
+    optionalDependencies:
+      typescript: 5.4.5
