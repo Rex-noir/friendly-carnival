@@ -21,7 +21,8 @@ class BookFactory extends Factory
             'title' => fake()->words(10, true),
             'isbn_10' => fake()->isbn10(),
             'isbn_13' => fake()->isbn13(),
-            'author_id' => AuthorFactory::new()->create()
+            'author_id' => AuthorFactory::new()->create(),
+            'publication_date' => fake()->date()
         ];
     }
 }
