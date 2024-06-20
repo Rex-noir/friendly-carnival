@@ -4,6 +4,7 @@ import { createInertiaApp } from "@inertiajs/vue3";
 import MainLayout from "./Layout/MainLayout.vue";
 import PrimeVue from "primevue/config";
 import Aura from "./presets/aura";
+import Ripple from "primevue/ripple";
 
 createInertiaApp({
     resolve: async (name) => {
@@ -20,6 +21,7 @@ createInertiaApp({
                 unstyled: true,
                 pt: Aura,
             })
+            .directive("ripple", Ripple)
             .mount(el);
     },
 });
