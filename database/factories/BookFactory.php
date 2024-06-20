@@ -29,11 +29,11 @@ class BookFactory extends Factory
         ];
     }
 
-    public function configure()
-    {
-        return $this->afterCreating(function (Book $book) {
-            $genres = DB::table('genres')->inRandomOrder()->take(rand(1, 10))->pluck('id');
-            $book->genres()->attach($genres);
-        });
-    }
+    // public function configure()
+    // {
+    //     return $this->afterCreating(function (Book $book) {
+    //         $genres = DB::table('genres')->inRandomOrder()->take(rand(1, 10))->pluck('id');
+    //         $book->genres()->attach($genres);
+    //     });
+    // }
 }
