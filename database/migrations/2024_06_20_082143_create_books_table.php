@@ -19,6 +19,10 @@ return new class extends Migration
             $table->string('isbn_10')->nullable();
             $table->string('isbn_13')->nullable();
             $table->date('publication_date')->nullable();
+            $table->string('description')->nullable();
+            $table->string('edition')->nullable();
+            $table->string('language')->nullable();
+            $table->string('cover_image')->nullable();
             $table->foreignIdFor(Author::class, 'author_id')->constrained()->onDelete('SET NULL');
             $table->timestamps();
         });
