@@ -10,7 +10,7 @@
     @inertiaHead
 </head>
 
-<body>
+<body class="min-h-screen dark:bg-surface-900">
     @inertia
 </body>
 
