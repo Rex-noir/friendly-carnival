@@ -30,7 +30,7 @@ watch(
         <div class="hidden md:block">Yo</div>
         <Card
             style="overflow: hidden; height: 98%"
-            class="dark:shadow-slate-800 my-auto flex flex-col justify-center sm:col-start-8 sm:col-end-13 w-full"
+            class="dark:shadow-slate-800 my-auto flex flex-col justify-center md:col-start-8 md:col-end-13 w-full"
         >
             <template #header
                 ><div class="w-full grid place-content-center">
