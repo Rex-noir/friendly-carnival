@@ -9,6 +9,10 @@ export default {
     darkMode: "class", // This enables dark mode based on the presence of the "dark" class in the HTML tag
     theme: {
         extend: {
+            backgroundImage: {
+                mobile: "url('/public/assets/small.jpg')",
+                desktop: "url('/public/assets/big.jpg')",
+            },
             colors: {
                 primary: "rgb(var(--primary))",
                 "primary-inverse": "rgb(var(--primary-inverse))",
