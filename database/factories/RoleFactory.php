@@ -35,4 +35,8 @@ class RoleFactory extends Factory
     {
         return $this->state(['role' => 'author']);
     }
+    public function user()
+    {
+        return $this->state(['role' => 'user']);
+    }
 }
