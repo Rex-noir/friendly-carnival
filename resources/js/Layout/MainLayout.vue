@@ -1,4 +1,5 @@
 <script setup>
+import { router } from "@inertiajs/vue3";
 import Avatar from "primevue/avatar";
 import Button from "primevue/button";
 import MegaMenu from "primevue/megamenu";
@@ -48,11 +49,12 @@ const items = ref([
         <div class="card">
             <MegaMenu
                 :model="items"
-                class="p-4 bg-surfrace-0 dark:bg-surface-900 shadow-md"
+                class="p-4 bg-surface-0 dark:bg-surface-900 shadow-md"
                 style="border-radius: 3rem"
             >
                 <template #start>
-                    <span class="material-icons text-green-600 text-3xl mr-3"
+                    <span
+                        class="material-icons hidden sm:block text-green-600 text-3xl mr-3"
                         >auto_stories</span
                     >
                 </template>
@@ -60,7 +62,7 @@ const items = ref([
                     <a
                         v-if="item.root"
                         v-ripple
-                        class="flex items-center cursor-pointer px-3 py-2 overflow-hidden relative font-semibold text-lg uppercase"
+                        class="flex items-center cursor-pointer px-3 py-2 overflow-hidden relative font-semibold text-lg uppercase hover:text-green-800"
                         style="border-radius: 2rem"
                     >
                         <span class="ml-2">{{ item.label }}</span>
@@ -97,6 +99,8 @@ const items = ref([
                     <Avatar
                         image="https://primefaces.org/cdn/primevue/images/avatar/amyelsner.png"
                         shape="circle"
+                        class="cursor-pointer"
+                        @click="router.visit('/dashboard')"
                     />
                 </template>
             </MegaMenu>
@@ -106,3 +110,4 @@ const items = ref([
         <slot />
     </main>
 </template>
+<style scoped></style>
