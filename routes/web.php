@@ -1,13 +1,13 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use App\Http\Middleware\AuthMiddleWare;
+use App\Http\Controllers\DashBoardController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return inertia('Index');
-});
+//Index
+Route::inertia('/', 'Index');
 
+//Authentication
 Route::prefix('auth')->group(function () {
     Route::inertia('/', 'Auth/Login');
     Route::inertia('login', 'Auth/Login');
@@ -15,3 +15,5 @@ Route::prefix('auth')->group(function () {
 
     Route::post('/login/submit', [AuthController::class, 'login']);
 });
+//Dashboards
+Route::get('/dashboard', DashBoardController::class)->name('dashboard')->middleware('auth');
