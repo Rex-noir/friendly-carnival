@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
+use Inertia\Inertia;
 
 class AuthController extends Controller
 {
@@ -16,8 +16,7 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt(['email' => $validated['email'], 'password' => $validated['password']], $request->input('remember'))) {
-            Log::info('Remember log', ['remember' => $request->input('remember')]);
-            return "Logged";
+            return redirect('/');
         } else {
             return back()->withErrors(['email' => 'Invalid credentials!']);
         }
