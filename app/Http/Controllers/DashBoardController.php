@@ -10,8 +10,8 @@ class DashBoardController extends Controller
     public function __invoke(Request $request)
     {
         if ($request->user() && $request->user()->hasRole('admin')) {
-            return inertia('AdminDashboard');
+            return inertia('Dashboard/AdminDashboard');
         }
-        return inertia('Dashboard');
+        return inertia('Dashboard/Dashboard');
     }
 }
