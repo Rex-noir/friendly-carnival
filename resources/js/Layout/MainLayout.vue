@@ -1,5 +1,7 @@
 <script setup>
-import { router } from "@inertiajs/vue3";
+import { modes } from "@/preferences";
+import { LayoutUtils } from "@/utils/layout";
+import { Link, router } from "@inertiajs/vue3";
 import Avatar from "primevue/avatar";
 import Button from "primevue/button";
 import MegaMenu from "primevue/megamenu";
@@ -49,14 +51,16 @@ const items = ref([
         <div class="card">
             <MegaMenu
                 :model="items"
-                class="p-4 bg-surface-0 dark:bg-surface-900 shadow-md"
+                class="p-4 bg-surface-0 shadow-md"
                 style="border-radius: 3rem"
             >
                 <template #start>
-                    <span
-                        class="material-icons hidden sm:block text-green-600 text-3xl mr-3"
-                        >auto_stories</span
-                    >
+                    <Link :href="'/'">
+                        <span
+                            class="material-icons text-green-600 text-3xl mr-3"
+                            >auto_stories</span
+                        >
+                    </Link>
                 </template>
                 <template #item="{ item }">
                     <a
@@ -96,12 +100,24 @@ const items = ref([
                     </div>
                 </template>
                 <template #end>
-                    <Avatar
-                        image="https://primefaces.org/cdn/primevue/images/avatar/amyelsner.png"
-                        shape="circle"
-                        class="cursor-pointer"
-                        @click="router.visit('/dashboard')"
-                    />
+                    <div class="flex">
+                        <span
+                            :aria-label="
+                                modes.isDarkMode ? 'Light Mode ' : 'Dark Mode'
+                            "
+                            @click="LayoutUtils.toggleDarkMode()"
+                            class="material-icons mr-3 my-auto cursor-pointer transition-all duration-200"
+                            >{{
+                                modes.isDarkMode ? "light_mode" : "dark_mode"
+                            }}</span
+                        >
+                        <Avatar
+                            image="https://primefaces.org/cdn/primevue/images/avatar/amyelsner.png"
+                            shape="circle"
+                            class="cursor-pointer"
+                            @click="router.visit('/dashboard')"
+                        />
+                    </div>
                 </template>
             </MegaMenu>
         </div>
