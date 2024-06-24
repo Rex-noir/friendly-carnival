@@ -2,9 +2,9 @@ export default {
     root: ({ props }) => ({
         class: [
             // Positioning
-            "absolute z-1",
+            "fixed z-10",
             {
-                "left-0 bottom-0 w-full": props.position == "bottom",
+                "left-0 bottom-2 w-full": props.position == "bottom",
                 "left-0 top-0 w-full": props.position == "top",
                 "left-0 top-0 h-full": props.position == "left",
                 "right-0 top-0 h-full": props.position == "right",
@@ -23,14 +23,13 @@ export default {
             "flex",
 
             // Shape & Border
-            "rounded-md",
+            "rounded-full",
 
             // Color
-            "bg-surface-0/10 dark:bg-surface-900/20 border border-surface-0/20",
-            "backdrop-blur-sm",
+            "bg-surface-100 dark:bg-surface-900 border border-surface-0/20",
 
             // Spacing
-            "p-1",
+            "p-0",
 
             // Misc
             "pointer-events-auto",
