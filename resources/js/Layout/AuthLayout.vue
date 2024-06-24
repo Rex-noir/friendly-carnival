@@ -34,7 +34,8 @@ watch(
         >
             <template #header
                 ><div class="w-full grid place-content-center">
-                    <span class="material-icons text-green-600 text-6xl"
+                    <span
+                        class="material-symbols-outlined text-green-600 text-6xl"
                         >auto_stories</span
                     >
                 </div>

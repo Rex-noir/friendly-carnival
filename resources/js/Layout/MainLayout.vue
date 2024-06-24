@@ -17,18 +17,18 @@ const items = ref([
                     items: [
                         {
                             label: "Horror",
-                            icon: "material-icons",
+                            icon: "material-symbols-outlined",
                             icon_name: "dangerous",
                         },
                         {
                             label: "Fantasy",
-                            icon: "material-icons",
+                            icon: "material-symbols-outlined",
                             icon_name: "stars",
                         },
                         {
                             label: "Romance",
                             icon_name: "favorite",
-                            icon: "material-icons",
+                            icon: "material-symbols-outlined",
                         },
                     ],
                 },
@@ -57,7 +57,7 @@ const items = ref([
                 <template #start>
                     <Link :href="'/'">
                         <span
-                            class="material-icons text-green-600 text-3xl mr-3"
+                            class="material-symbols-outlined text-green-600 text-3xl mr-3"
                             >auto_stories</span
                         >
                     </Link>
@@ -66,7 +66,7 @@ const items = ref([
                     <a
                         v-if="item.root"
                         v-ripple
-                        class="flex items-center cursor-pointer px-3 py-2 overflow-hidden relative font-semibold text-lg uppercase hover:text-green-800"
+                        class="cursor-pointer px-3 py-2 overflow-hidden relative font-semibold text-lg uppercase hover:text-green-800"
                         style="border-radius: 2rem"
                     >
                         <span class="ml-2">{{ item.label }}</span>
@@ -106,7 +106,7 @@ const items = ref([
                                 modes.isDarkMode ? 'Light Mode ' : 'Dark Mode'
                             "
                             @click="LayoutUtils.toggleDarkMode()"
-                            class="material-icons mr-3 my-auto cursor-pointer transition-all duration-200"
+                            class="material-symbols-outlined mr-3 my-auto cursor-pointer transition-all duration-200"
                             >{{
                                 modes.isDarkMode ? "light_mode" : "dark_mode"
                             }}</span
