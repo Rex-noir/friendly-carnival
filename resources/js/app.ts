@@ -7,6 +7,7 @@ import Aura from "./presets/aura";
 import Ripple from "primevue/ripple";
 
 import AuthLayout from "./Layout/AuthLayout.vue";
+import ripple from "./presets/aura/ripple";
 
 const layoutMap = {
     "Auth/": AuthLayout,
@@ -33,6 +34,7 @@ createInertiaApp({
             .use(PrimeVue, {
                 unstyled: true,
                 pt: Aura,
+                ripple: true,
             })
             .directive("ripple", Ripple)
             .mount(el);
