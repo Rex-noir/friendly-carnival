@@ -1,5 +1,5 @@
 // types.ts
-export interface Location {
+interface Location {
     ip: string;
     ip_private: string;
     hostname: string;
@@ -13,7 +13,7 @@ export interface Location {
     postal: string;
 }
 
-export interface Software {
+interface Software {
     os: string;
     distro: string;
     kernel: string;
@@ -22,28 +22,28 @@ export interface Software {
     php: string;
 }
 
-export interface Disk {
+interface Disk {
     total: number;
     free: number;
     human_total: string;
     human_free: string;
 }
 
-export interface Ram {
+interface Ram {
     total: number;
     free: number;
     human_total: string;
     human_free: string;
 }
 
-export interface Swap {
+interface Swap {
     total: number;
     free: number;
     human_total: string;
     human_free: string;
 }
 
-export interface Hardware {
+interface Hardware {
     cpu: string;
     cpu_count: number;
     model: string;
@@ -53,18 +53,18 @@ export interface Hardware {
     swap: Swap;
 }
 
-export interface Uptime {
+interface Uptime {
     uptime: string;
     booted_at: string;
 }
 
-export interface Server {
+interface Server {
     software: Software;
     hardware: Hardware;
     uptime: Uptime;
 }
 
-export interface Database {
+interface Database {
     driver: string;
     version: string;
 }
@@ -74,4 +74,24 @@ export interface SystemInfo {
     client: Location;
     server: Server;
     database: Database;
+}
+
+export interface RealTimeSystemInfo {
+    cpu_load: {
+        "1m": number; // Example: "31.79%"
+        "5m": number; // Example: "28.47%"
+        "15m": number; // Example: "20.95%"
+    };
+    memory_usage: {
+        memory_total: string; // Example: "3920 MB"
+        memory_used: string; // Example: "3538 MB"
+        memory_usage: string; // Example: "90.26 %"
+    };
+    storage_usage: {
+        disk_total: string; // Example: "1031018.43 MB"
+        disk_used: string; // Example: "55333.4 MB"
+        disk_free: string; // Example: "975685.02 MB"
+    };
+    uptime: string;
+    database: string;
 }
