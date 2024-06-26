@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Hamcrest\Type\IsNumeric;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -61,5 +62,23 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         //
+    }
+
+    /** Search users */
+    public function search(Request $request)
+    {
+        $input = $request->input('value');
+
+        if (empty($input)) {
+            return collect([]);
+        }
+
+        if (is_numeric($input)) {
+            $user =  User::find($input);
+
+            return $user ? collect([$user]) : collect([]);
+        }
+
+        return  User::where('name', 'like', '%' . $input . '%')->get();
     }
 }
