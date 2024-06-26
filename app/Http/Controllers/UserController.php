@@ -14,6 +14,7 @@ class UserController extends Controller
     public function index()
     {
         //
+        return User::with('role')->where('role_id', 3)->paginate(10);
     }
 
     /**

@@ -24,4 +24,5 @@ Route::get('/dashboard', DashBoardController::class)->name('dashboard')->middlew
 //Routes for all users
 Route::prefix('users')->group(function () {
     Route::post('/search', [UserController::class, 'search'])->name('users.search');
-});
+    Route::post('/index', [UserController::class, 'index'])->name('users.index');
+})->middleware('auth');
