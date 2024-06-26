@@ -34,12 +34,31 @@ const rowClicked = (e: DataTableRowClickEvent) => {
             @row-click="rowClicked"
             tableStyle="min-width: fit-content"
         >
-            <Column field="id" header="Id" style="width: 3%"> </Column>
-            <Column field="name" header="Name" style="width: fit-content"></Column>
+            <Column field="id" header="Id" style="width: 3%">
+                <template #body="row">
+                    <span
+                        class="font-bold"
+                        :class="
+                            expandedRows.findIndex(
+                                (r) => r.id === row.data.id
+                            ) !== -1
+                                ? 'text-red-500'
+                                : ''
+                        "
+                        >{{ row.data.id }}</span
+                    >
+                </template>
+            </Column>
+            <Column
+                field="name"
+                header="Name"
+                style="width: fit-content"
+            ></Column>
             <Column ripple expander style="width: 5rem">
                 <template #body="row">
                     <span class="material-symbols-outlined">{{
-                        expandedRows.findIndex((r) => r.id === row.data.id) !== -1
+                        expandedRows.findIndex((r) => r.id === row.data.id) !==
+                        -1
                             ? "keyboard_arrow_down"
                             : "chevron_right"
                     }}</span>
