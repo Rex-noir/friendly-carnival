@@ -7,11 +7,10 @@ import Card from "primevue/card";
 import Button from "primevue/button";
 
 const props = defineProps<{
-    users: User[];
+    users: User[] | User[][];
 }>();
 
 const expandedRows = ref<User[]>([]);
-const users = ref(props.users);
 
 const rowClicked = (e: DataTableRowClickEvent) => {
     const id = e.data.id;
@@ -29,7 +28,7 @@ const rowClicked = (e: DataTableRowClickEvent) => {
         <DataTable
             showGridLines
             v-model:expandedRows="expandedRows"
-            :value="users"
+            :value="props.users"
             ripple
             @row-click="rowClicked"
             tableStyle="min-width: fit-content"

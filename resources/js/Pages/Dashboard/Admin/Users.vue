@@ -1,20 +1,27 @@
 <script setup lang="ts">
-import { Link, usePage } from "@inertiajs/vue3";
+import { Link } from "@inertiajs/vue3";
 import { Pagination, User } from "@/types/users.interface";
 import { onMounted, ref } from "vue";
-import Card from "primevue/card";
 import IconField from "primevue/iconfield";
 import InputIcon from "primevue/inputicon";
 import InputText from "primevue/inputtext";
 import UserUtils from "@/utils/user";
-import { debounce, delay } from "lodash";
+import { debounce } from "lodash";
 import UsersDataTable from "./Components/UsersDataTable.vue";
 
-const usersData = usePage().props.users as Pagination<User>;
+let usersData = ref<Pagination<User[]>>();
+const users = ref<User[][]>([]);
 const searchModel = ref();
 
+onMounted(async () => {
+    try {
+        const data = await UserUtils.index();
+        usersData.value = data;
+        users.value = data.data;
+    } catch (error) {}
+});
+
 const loading = ref<boolean>();
-const overlay = ref<boolean>();
 const result = ref<User[] | []>();
 
 const search = async () => {
@@ -22,7 +29,6 @@ const search = async () => {
         const data = await UserUtils.searchUser(searchModel.value);
         loading.value = false;
         result.value = data;
-        console.log(data);
     } catch (error) {
         throw error;
     }
@@ -83,9 +89,9 @@ const debounceSearch = debounce(search, 600);
             </div>
             <!-- Form -->
         </div>
-        <UsersDataTable :users="usersData.data"></UsersDataTable>
+        <UsersDataTable v-if="usersData" :users="users"></UsersDataTable>
     </div>
-    <div class="w-full">
+    <div class="w-full" v-if="usersData">
         <div class="flex justify-center p-3 text-lg gap-3">
             <Link
                 v-for="links in usersData.links"
