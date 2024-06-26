@@ -16,11 +16,13 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
 
         $this->call(RoleSeeder::class);
+        User::factory(80)->create();
 
         $user = User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
-            'password' => 'test'
+            'password' => 'test',
+            'role_id' => '1'
         ]);
 
         $this->call(GenreSeeder::class);
