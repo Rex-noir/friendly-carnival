@@ -8,18 +8,30 @@ import InputText from "primevue/inputtext";
 import UserUtils from "@/utils/user";
 import { debounce } from "lodash";
 import UsersDataTable from "./Components/UsersDataTable.vue";
+import Button from "primevue/button";
 
 let usersData = ref<Pagination<User[]>>();
 const users = ref<User[][]>([]);
 const searchModel = ref();
 
 onMounted(async () => {
+    fetchData();
+});
+
+const fetchData = async (url?: string) => {
     try {
-        const data = await UserUtils.index();
+        let data;
+        if (url) {
+            data = await UserUtils.index(url);
+        } else {
+            data = await UserUtils.index();
+        }
         usersData.value = data;
         users.value = data.data;
-    } catch (error) {}
-});
+    } catch (error) {
+        throw error;
+    }
+};
 
 const loading = ref<boolean>();
 const result = ref<User[] | []>();
@@ -93,17 +105,14 @@ const debounceSearch = debounce(search, 600);
     </div>
     <div class="w-full" v-if="usersData">
         <div class="flex justify-center p-3 text-lg gap-3">
-            <Link
-                v-for="links in usersData.links"
-                v-html="links.label"
-                :href="
-                    links.url
-                        ? links.url
-                        : 'http://127.0.0.1:8000/dashboard?page=1'
-                "
-                class="hover:text-green-500"
-                :class="links.active ? 'text-red-500' : ''"
-            ></Link>
+            <Button
+                outlined
+                v-for="link in usersData.links"
+                v-html="link.label"
+                @click="fetchData(link.url as string)"
+                class="border-none !text-black active:!ring-0 focus-within:!ring-0 !p-1 hover:bg-slate-200 dark:hover:bg-slate-900 dark:!text-white"
+                :class="link.active ? '!text-red-500' : ''"
+            ></Button>
         </div>
     </div>
 </template>

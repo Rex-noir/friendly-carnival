@@ -22,9 +22,14 @@ export default class UserUtils {
         }
     }
 
-    static async index(): Promise<Pagination<User[]>> {
+    static async index(url?: string): Promise<Pagination<User[]>> {
         try {
-            const response = await axios.post("/users/index");
+            let response;
+            if (url) {
+                response = await axios.post(url);
+            } else {
+                response = await axios.post("/users/index");
+            }
             if (response.status !== 200) {
                 throw new Error(response.statusText);
             }
