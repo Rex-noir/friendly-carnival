@@ -1090,6 +1090,12 @@ export default {
         class: [
             // Color
             'dark:text-white/80',
+            //hover
+            'hover:bg-slate-200 dark:hover:bg-slate-700',
+
+            //Cursor
+            'cursor-pointer',
+
             { 'bg-primary-highlight text-primary-highlight-inverse': context.selected },
             { 'bg-surface-0 text-surface-600 dark:bg-surface-900': !context.selected },
             { 'font-bold bg-surface-0 dark:bg-surface-900 z-20': props.frozenRow },
