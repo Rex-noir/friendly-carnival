@@ -2,15 +2,24 @@
 import DataTable, { DataTableRowClickEvent } from "primevue/datatable";
 import Column from "primevue/column";
 import { User } from "@/types/users.interface";
-import { ref } from "vue";
+import { onMounted, reactive, ref } from "vue";
 import Card from "primevue/card";
 import Button from "primevue/button";
+import ToggleButton from "primevue/togglebutton";
+import InputText from "primevue/inputtext";
+import UserUtils from "@/utils/user";
+import Spinner from "@/Pages/Components/Spinner.vue";
+import { debounce } from "lodash";
 
 const props = defineProps<{
     users: User[] | User[][];
 }>();
 
 const expandedRows = ref<User[]>([]);
+const editEmail = reactive<boolean[]>([]);
+const emailModel = reactive<string[]>([]);
+const loading = reactive<boolean[]>([]);
+const updateStatus = reactive<string[]>([]);
 
 const rowClicked = (e: DataTableRowClickEvent) => {
     const id = e.data.id;
@@ -22,6 +31,38 @@ const rowClicked = (e: DataTableRowClickEvent) => {
         expandedRows.value.push(e.data);
     }
 };
+
+const updateEmail = async (id: number) => {
+    if (!editEmail[id] && emailModel[id]) {
+        try {
+            loading[id] = true;
+            updateStatus[id] = "";
+            const data = await UserUtils.update({
+                id: id,
+                email: emailModel[id],
+            });
+            loading[id] = false;
+            updateStatus[id] = "Updated!";
+            debounce(() => (updateStatus[id] = ""), 2000)();
+        } catch (error) {
+            loading[id] = false;
+            updateStatus[id] = "Failed!";
+            debounce(() => (updateStatus[id] = ""), 2000)();
+            throw error;
+        }
+    }
+};
+
+onMounted(() => {
+    props.users.forEach((user) => {
+        if (!Array.isArray(user)) {
+            emailModel[user.id] = user.email;
+            editEmail[user.id] = false;
+            loading[user.id] = false;
+            updateStatus[user.id] = "";
+        }
+    });
+});
 </script>
 <template>
     <div>
@@ -64,11 +105,52 @@ const rowClicked = (e: DataTableRowClickEvent) => {
                 </template></Column
             >
             <template #expansion="user">
-                <Card class="border dark:border-slate-50 p-0">
-                    <template #title>{{ user.data.name }}</template>
+                <Card>
+                    <template #title
+                        ><div
+                            class="grid grid-cols-2 place-content-center items-center"
+                        >
+                            <span>{{ user.data.name }}</span>
+                            <div class="justify-self-end">
+                                <span
+                                    v-if="updateStatus[user.data.id]"
+                                    :class="
+                                        updateStatus[user.data.id] ===
+                                        'Updated!'
+                                            ? 'text-green-500'
+                                            : 'text-red-500'
+                                    "
+                                    >{{ updateStatus[user.data.id] }}</span
+                                >
+                                <Spinner v-if="loading[user.data.id]"></Spinner>
+                            </div></div
+                    ></template>
                     <template #content
                         ><div class="grid gap-3 w-full grid-cols-2">
-                            {{ user.data.email }}
+                            <div
+                                class="grid grid-cols-11 col-span-2 w-full gap-1"
+                            >
+                                <InputText
+                                    v-model="emailModel[user.data.id]"
+                                    type="text"
+                                    size="small"
+                                    class="col-span-11 col-start-1 w-full"
+                                    :disabled="!editEmail[user.data.id]"
+                                    placeholder="Small"
+                                />
+                                <ToggleButton
+                                    v-model="editEmail[user.data.id]"
+                                    v-on:change="
+                                        (e) => updateEmail(user.data.id)
+                                    "
+                                    offIcon="pi pi-pencil"
+                                    onIcon="pi pi-check"
+                                    on-label=" "
+                                    off-label=" "
+                                    class="rounded-full col-start-12 self-start"
+                                />
+                            </div>
+
                             <Button
                                 rounded
                                 class="!p-2 col-start-1"
