@@ -27,4 +27,5 @@ Route::prefix('users')->group(function () {
     Route::post('/index', [UserController::class, 'index'])->name('users.index');
 
     Route::put('/update/{id}', [UserController::class, 'update'])->name('users.update');
+    Route::delete('/delete/{id}', [UserController::class, 'destroy'])->name('users.delete');
 })->middleware('auth');

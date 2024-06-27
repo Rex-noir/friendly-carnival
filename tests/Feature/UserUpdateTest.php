@@ -17,7 +17,6 @@ class UserUpdateTest extends TestCase
 
     public function test_Update_user()
     {
-        Role::factory()->count(3)->create();
         $user = User::factory()->create();
 
         $newData = ['email' => 'kaihpi@example.com'];
@@ -31,7 +30,6 @@ class UserUpdateTest extends TestCase
 
     public function test_Update_Multiple()
     {
-        Role::factory()->count(3)->create();
         $user = User::factory()->create();
 
         $newData = ['email' => 'kulikawn@example.com', 'name' => 'Suanga'];

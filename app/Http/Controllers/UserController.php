@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
+
+use function Pest\Laravel\json;
 
 class UserController extends Controller
 {
@@ -15,7 +18,7 @@ class UserController extends Controller
     public function index()
     {
         //
-        return User::with('role')->where('role_id', 3)->paginate(10);
+        return User::paginate(10);
     }
 
     /**
@@ -55,21 +58,22 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user, $id)
     {
-        $user = User::findOrFail($id);
-
+        if (Auth::user()->role !== 'admin' && Auth::user()->id !== $id) {
+            return response()->json(['errors' => 'Authorization error'], 403);
+        }
         try {
             $validated = $request->validate([
                 'email' => ['string', 'email', 'max:255'],
                 'name' => ['string', 'max:255',]
             ]);
 
-            $user->update($request->only('email', 'name'));
+            User::findOrFail($id)->update($request->only('email', 'name'));
             return response($validated);
         } catch (\Throwable $th) {
             if ($th instanceof ModelNotFoundException) {
                 return response()->json(['errors' => 'User not found'], 404);
             } else if ($th instanceof ValidationException) {
-                return response()->json(['errors' => $th->errors(), 'email' => $user->email], 422);
+                return response()->json(['errors' => $th->errors(), 'email' => User::find($id)->email], 422);
             }
             return response()->json(['errors' => "Something's wrong"], 500);
         }
@@ -78,9 +82,23 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(User $user)
+    public function destroy(User $user, $id)
     {
-        //
+        try {
+            if (Auth::user()->role === 'user' && Auth::user()->id === $id) {
+                User::findOrFail($id)->delete();
+                return response()->json(null, 204);
+            } else if (Auth::user()->role === 'admin') {
+                User::findOrFail($id)->delete();
+                return response()->json(null, 204);
+            }
+            return response()->json(['errors' => 'Authorization error', 403]);
+        } catch (\Throwable $th) {
+            if ($th instanceof ModelNotFoundException) {
+                return response()->json(['errors' => 'User not found'], 404);
+            }
+            return response()->json(['errors' => "Something's wrong"], 500);
+        }
     }
 
     /** Search users */
