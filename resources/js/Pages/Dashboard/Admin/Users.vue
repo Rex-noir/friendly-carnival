@@ -7,9 +7,9 @@ import InputText from "primevue/inputtext";
 import UserUtils from "@/utils/user";
 import { debounce } from "lodash";
 import UsersDataTable from "./Components/UsersDataTable.vue";
-import Button from "primevue/button";
 import TableSkeleton from "./Components/TableSkeleton.vue";
 import Spinner from "@/Pages/Components/Spinner.vue";
+import PaginationT from "@/Pages/Components/PaginationT.vue";
 
 let usersData = ref<Pagination<User[]>>();
 const users = ref<User[][]>([]);
@@ -89,17 +89,12 @@ const debounceSearch = debounce(search, 600);
         ></UsersDataTable>
         <TableSkeleton v-if="!usersData"></TableSkeleton>
     </div>
-    <div class="w-full" v-if="usersData">
-        <div class="flex justify-center p-3 text-lg gap-3">
-            <Button
-                outlined
-                v-for="link in usersData.links"
-                v-html="link.label"
-                @click="fetchData(link.url as string)"
-                class="border-none !text-black active:!ring-0 focus-within:!ring-0 !p-1 hover:bg-slate-200 dark:hover:bg-slate-900 dark:!text-white"
-                :class="link.active ? '!text-red-500' : ''"
-            ></Button>
-        </div>
+    <div class="w-[994] justify-center flex overflow-auto" v-if="usersData">
+        <PaginationT
+            :key="usersData.current_page"
+            @paginate="(url:string)=>fetchData(url)"
+            :paginator="usersData"
+        ></PaginationT>
     </div>
 </template>
 <style scoped>
