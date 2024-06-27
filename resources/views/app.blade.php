@@ -8,6 +8,7 @@
     @vite('resources/js/app.ts')
     @vite('resources/css/app.css')
     @inertiaHead
+    @routes
 </head>
 
 <body class="min-h-screen dark:bg-surface-900 transition-[background] duration-500  dark:text-white">
