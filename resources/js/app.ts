@@ -7,7 +7,7 @@ import Aura from "./presets/aura";
 import Ripple from "primevue/ripple";
 
 import AuthLayout from "./Layout/AuthLayout.vue";
-import ripple from "./presets/aura/ripple";
+import "primeicons/primeicons.css";
 
 const layoutMap = {
     "Auth/": AuthLayout,
