@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use Illuminate\Http\Request;
-use Larinfo;
 
 class DashBoardController extends Controller
 {
@@ -13,11 +11,8 @@ class DashBoardController extends Controller
     {
         if ($request->user() && $request->user()->hasRole('admin')) {
 
-            $larinfo = Larinfo::getInfo();
 
-            return inertia('Dashboard/AdminDashboard', [
-                'systemStatus' => $larinfo,
-            ]);
+            return inertia('Dashboard/AdminDashboard');
         }
         return inertia('Dashboard/Dashboard');
     }
