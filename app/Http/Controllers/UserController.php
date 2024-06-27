@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
@@ -54,8 +55,9 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user, $id)
     {
+        $user = User::findOrFail($id);
+
         try {
-            $user = User::findOrFail($id);
             $validated = $request->validate([
                 'email' => ['string', 'email', 'max:255'],
                 'name' => ['string', 'max:255',]
@@ -65,9 +67,11 @@ class UserController extends Controller
             return response($validated);
         } catch (\Throwable $th) {
             if ($th instanceof ModelNotFoundException) {
-                return response()->json(['error' => 'User not found']);
+                return response()->json(['errors' => 'User not found'], 404);
+            } else if ($th instanceof ValidationException) {
+                return response()->json(['errors' => $th->errors(), 'email' => $user->email], 422);
             }
-            return response()->json(['error' => "Something's wrong"]);
+            return response()->json(['errors' => "Something's wrong"], 500);
         }
     }
 
