@@ -5,11 +5,11 @@ import { User } from "@/types/users.interface";
 import { onMounted, reactive, ref } from "vue";
 import Card from "primevue/card";
 import Button from "primevue/button";
-import ToggleButton from "primevue/togglebutton";
 import InputText from "primevue/inputtext";
 import UserUtils from "@/utils/user";
 import Spinner from "@/Pages/Components/Spinner.vue";
 import { debounce } from "lodash";
+import axios from "axios";
 
 const props = defineProps<{
     users: User[] | User[][];
@@ -32,6 +32,11 @@ const rowClicked = (e: DataTableRowClickEvent) => {
     }
 };
 
+const toggleClicked = (id: number) => {
+    editEmail[id] = !editEmail[id];
+    updateEmail(id);
+};
+
 const updateEmail = async (id: number) => {
     if (!editEmail[id] && emailModel[id]) {
         try {
@@ -45,10 +50,12 @@ const updateEmail = async (id: number) => {
             updateStatus[id] = "Updated!";
             debounce(() => (updateStatus[id] = ""), 2000)();
         } catch (error) {
-            loading[id] = false;
-            updateStatus[id] = "Failed!";
-            debounce(() => (updateStatus[id] = ""), 2000)();
-            throw error;
+            if (axios.isAxiosError(error)) {
+                emailModel[id] = error.response?.data.email;
+                loading[id] = false;
+                updateStatus[id] = "Invalid Email";
+                debounce(() => (updateStatus[id] = ""), 2000)();
+            }
         }
     }
 };
@@ -105,7 +112,7 @@ onMounted(() => {
                 </template></Column
             >
             <template #expansion="user">
-                <Card>
+                <Card class="!border-none !shadow-none">
                     <template #title
                         ><div
                             class="grid grid-cols-2 place-content-center items-center"
@@ -132,23 +139,33 @@ onMounted(() => {
                             >
                                 <InputText
                                     v-model="emailModel[user.data.id]"
-                                    type="text"
+                                    type="email"
                                     size="small"
                                     class="col-span-11 col-start-1 w-full"
                                     :disabled="!editEmail[user.data.id]"
                                     placeholder="Small"
                                 />
-                                <ToggleButton
-                                    v-model="editEmail[user.data.id]"
-                                    v-on:change="
-                                        (e) => updateEmail(user.data.id)
+                                <Button
+                                    :loading="loading[user.data.id]"
+                                    outlined
+                                    @click="toggleClicked(user.data.id)"
+                                    :icon="
+                                        editEmail[user.data.id]
+                                            ? 'pi pi-check'
+                                            : 'pi pi-pencil'
                                     "
-                                    offIcon="pi pi-pencil"
-                                    onIcon="pi pi-check"
-                                    on-label=" "
-                                    off-label=" "
-                                    class="rounded-full col-start-12 self-start"
-                                />
+                                    :aria-label="
+                                        editEmail[user.data.id]
+                                            ? 'Save'
+                                            : 'Edit'
+                                    "
+                                    class="col-start-12 focus:!ring-0 !border-gray-500 dark:!border-slate-400"
+                                    ><template #loadingicon>
+                                        <Spinner
+                                            class="flex items-center justify-center"
+                                        ></Spinner>
+                                    </template>
+                                </Button>
                             </div>
 
                             <Button
