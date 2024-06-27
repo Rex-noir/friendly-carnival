@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Hamcrest\Type\IsNumeric;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -52,9 +52,23 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, User $user)
+    public function update(Request $request, User $user, $id)
     {
-        //
+        try {
+            $user = User::findOrFail($id);
+            $validated = $request->validate([
+                'email' => ['string', 'email', 'max:255'],
+                'name' => ['string', 'max:255',]
+            ]);
+
+            $user->update($request->only('email', 'name'));
+            return response($validated);
+        } catch (\Throwable $th) {
+            if ($th instanceof ModelNotFoundException) {
+                return response()->json(['error' => 'User not found']);
+            }
+            return response()->json(['error' => "Something's wrong"]);
+        }
     }
 
     /**
