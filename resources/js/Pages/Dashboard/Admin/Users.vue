@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Link } from "@inertiajs/vue3";
 import { Pagination, User } from "@/types/users.interface";
 import { onMounted, ref } from "vue";
 import IconField from "primevue/iconfield";
@@ -9,15 +8,15 @@ import UserUtils from "@/utils/user";
 import { debounce } from "lodash";
 import UsersDataTable from "./Components/UsersDataTable.vue";
 import Button from "primevue/button";
+import TableSkeleton from "./Components/TableSkeleton.vue";
 
 let usersData = ref<Pagination<User[]>>();
 const users = ref<User[][]>([]);
 const searchModel = ref();
 
 onMounted(async () => {
-    fetchData();
+    debounceFetch();
 });
-
 const fetchData = async (url?: string) => {
     try {
         let data;
@@ -32,6 +31,7 @@ const fetchData = async (url?: string) => {
         throw error;
     }
 };
+const debounceFetch = debounce(fetchData, 500);
 
 const loading = ref<boolean>();
 const result = ref<User[] | []>();
@@ -102,6 +102,7 @@ const debounceSearch = debounce(search, 600);
             <!-- Form -->
         </div>
         <UsersDataTable v-if="usersData" :users="users"></UsersDataTable>
+        <TableSkeleton v-if="!usersData"></TableSkeleton>
     </div>
     <div class="w-full" v-if="usersData">
         <div class="flex justify-center p-3 text-lg gap-3">
@@ -122,11 +123,6 @@ const debounceSearch = debounce(search, 600);
     z-index: 10;
     width: 100vw;
     height: 100vh;
-    background-color: rgba(
-        0,
-        0,
-        0,
-        0.5
-    ); /* Adjust the last value for transparency */
+    background-color: rgba(0, 0, 0, 0.7);
 }
 </style>
