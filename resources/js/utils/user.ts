@@ -17,7 +17,6 @@ export default class UserUtils {
             }
             return response.data;
         } catch (error) {
-            console.error("Error fetching users", error);
             throw error;
         }
     }
@@ -35,7 +34,6 @@ export default class UserUtils {
             }
             return response.data;
         } catch (error) {
-            console.error("Error fetching users", error);
             throw error;
         }
     }
