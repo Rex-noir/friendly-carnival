@@ -15,8 +15,8 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
-        if (Auth::attempt(['email' => $validated['email'], 'password' => $validated['password']], $request->input('remember'))) {
-            return redirect('/');
+        if (Auth::attempt(['email' => $validated['email'], 'password' => $validated['password']], (bool)($request->input('remember')))) {
+            return redirect()->intended(session()->get('url.intended'));
         } else {
             return back()->withErrors(['email' => 'Invalid credentials!']);
         }
