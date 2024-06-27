@@ -9,7 +9,7 @@ export default class UserUtils {
      */
     static async searchUser(value: string | number): Promise<User[]> {
         try {
-            const response = await axios.post("/users/search", {
+            const response = await axios.post(route("users.search"), {
                 value,
             });
             if (response.status !== 200) {
@@ -28,7 +28,7 @@ export default class UserUtils {
             if (url) {
                 response = await axios.post(url);
             } else {
-                response = await axios.post("/users/index");
+                response = await axios.post(route("users.index"));
             }
             if (response.status !== 200) {
                 throw new Error(response.statusText);
@@ -36,6 +36,21 @@ export default class UserUtils {
             return response.data;
         } catch (error) {
             console.error("Error fetching users", error);
+            throw error;
+        }
+    }
+
+    static async update(info: { id: number; email: string }): Promise<User> {
+        try {
+            const response = await axios.put(
+                route("users.update", { id: info.id }),
+                info
+            );
+            if (response.status !== 200) {
+                throw new Error(response.statusText);
+            }
+            return response.data;
+        } catch (error) {
             throw error;
         }
     }
