@@ -68,7 +68,7 @@ const rowClicked = (e: DataTableRowClickEvent) => {
                     <template #title>{{ user.data.name }}</template>
                     <template #content
                         ><div class="grid gap-3 w-full grid-cols-2">
-                            Email : {{ user.data.email }}
+                            {{ user.data.email }}
                             <Button
                                 rounded
                                 class="!p-2 col-start-1"
