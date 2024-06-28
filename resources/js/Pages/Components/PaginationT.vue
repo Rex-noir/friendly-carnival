@@ -7,7 +7,7 @@ const props = defineProps<{ paginator: Pagination<User[]> }>();
 
 const totalPages = props.paginator.last_page;
 const currentPage = props.paginator.current_page;
-const numLinksAround = 3;
+const numLinksAround = 2;
 
 const startPage = Math.max(1, currentPage - numLinksAround);
 const endPage = Math.min(totalPages, currentPage + numLinksAround);
@@ -23,7 +23,7 @@ const displayedLinks = ref(
             <li>
                 <Button
                     @click="$emit('paginate', paginator.prev_page_url)"
-                    class="flex items-center focus:!ring-0 justify-center px-3 h-8 leading-tight text-gray-800 !bg-gray-200 border !border-gray-300 hover:!bg-gray-100 hover:!text-gray-700 dark:!bg-gray-800 dark:!border-gray-700 dark:!text-gray-400 dark:hover:!bg-gray-700 dark:!hover:text-white"
+                    class="flex items-center focus:!ring-0 justify-center px-3 h-8 leading-tight text-gray-900 !bg-gray-200 border !border-gray-300 hover:!bg-gray-100 hover:!text-gray-700 dark:!bg-gray-800 dark:!border-gray-700 dark:!text-gray-400 dark:hover:!bg-gray-700 dark:!hover:text-white"
                 >
                     <span class="sr-only">Previous</span>
                     <svg
@@ -52,7 +52,7 @@ const displayedLinks = ref(
                             ? ' !text-red-500'
                             : ''
                     "
-                    class="flex items-center focus:!ring-0 justify-center px-3 h-8 leading-tight text-gray-800 !bg-gray-200 border !border-gray-300 hover:!bg-gray-100 hover:!text-gray-700 dark:!bg-gray-800 dark:!border-gray-700 dark:!text-gray-400 dark:hover:!bg-gray-700 dark:!hover:text-white"
+                    class="flex items-center focus:!ring-0 justify-center px-3 h-8 leading-tight text-gray-900 !bg-gray-200 border !border-gray-300 hover:!bg-gray-100 hover:!text-gray-700 dark:!bg-gray-800 dark:!border-gray-700 dark:!text-gray-400 dark:hover:!bg-gray-700 dark:!hover:text-white"
                 >
                     {{ link.label }}
                 </Button>
@@ -60,7 +60,7 @@ const displayedLinks = ref(
             <li>
                 <Button
                     @click="$emit('paginate', paginator.next_page_url)"
-                    class="flex items-center focus:!ring-0 justify-center px-3 h-8 leading-tight text-gray-800 !bg-gray-200 border !border-gray-300 hover:!bg-gray-100 hover:!text-gray-700 dark:!bg-gray-800 dark:!border-gray-700 dark:!text-gray-400 dark:hover:!bg-gray-700 dark:!hover:text-white"
+                    class="flex items-center focus:!ring-0 justify-center px-3 h-8 leading-tight text-gray-900 !bg-gray-200 border !border-gray-300 hover:!bg-gray-100 hover:!text-gray-700 dark:!bg-gray-800 dark:!border-gray-700 dark:!text-gray-400 dark:hover:!bg-gray-700 dark:!hover:text-white"
                 >
                     <span class="sr-only">Next</span>
                     <svg
