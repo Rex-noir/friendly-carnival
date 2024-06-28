@@ -10,7 +10,7 @@ const products = ref(fill(Array(11), undefined));
 <template>
     <div class="card">
         <DataTable :value="products">
-            <Column field="ID" header="ID">
+            <Column field="ID" style="width: 3%" header="ID">
                 <template #body>
                     <Skeleton></Skeleton>
                 </template>
