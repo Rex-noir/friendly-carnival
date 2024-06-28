@@ -23,7 +23,7 @@ const displayedLinks = ref(
             <li>
                 <Button
                     @click="$emit('paginate', paginator.prev_page_url)"
-                    class="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 focus:!ring-0 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                    class="flex items-center focus:!ring-0 justify-center px-3 h-8 leading-tight text-gray-800 !bg-gray-200 border !border-gray-300 hover:!bg-gray-100 hover:!text-gray-700 dark:!bg-gray-800 dark:!border-gray-700 dark:!text-gray-400 dark:hover:!bg-gray-700 dark:!hover:text-white"
                 >
                     <span class="sr-only">Previous</span>
                     <svg
@@ -49,10 +49,10 @@ const displayedLinks = ref(
                     @click="$emit('paginate', link.url)"
                     :class="
                         Number(link.label) === paginator.current_page
-                            ? 'bg-zinc-300 !text-red-500'
+                            ? ' !text-red-500'
                             : ''
                     "
-                    class="flex items-center focus:!ring-0 justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                    class="flex items-center focus:!ring-0 justify-center px-3 h-8 leading-tight text-gray-800 !bg-gray-200 border !border-gray-300 hover:!bg-gray-100 hover:!text-gray-700 dark:!bg-gray-800 dark:!border-gray-700 dark:!text-gray-400 dark:hover:!bg-gray-700 dark:!hover:text-white"
                 >
                     {{ link.label }}
                 </Button>
@@ -60,7 +60,7 @@ const displayedLinks = ref(
             <li>
                 <Button
                     @click="$emit('paginate', paginator.next_page_url)"
-                    class="flex items-center focus:!ring-0 justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                    class="flex items-center focus:!ring-0 justify-center px-3 h-8 leading-tight text-gray-800 !bg-gray-200 border !border-gray-300 hover:!bg-gray-100 hover:!text-gray-700 dark:!bg-gray-800 dark:!border-gray-700 dark:!text-gray-400 dark:hover:!bg-gray-700 dark:!hover:text-white"
                 >
                     <span class="sr-only">Next</span>
                     <svg
