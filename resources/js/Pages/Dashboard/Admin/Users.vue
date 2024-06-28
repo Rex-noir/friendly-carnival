@@ -21,11 +21,7 @@ onMounted(async () => {
 const fetchData = async (url?: string) => {
     try {
         let data;
-        if (url) {
-            data = await UserUtils.index(url);
-        } else {
-            data = await UserUtils.index();
-        }
+        data = await UserUtils.index(url);
         usersData.value = data;
         users.value = data.data;
     } catch (error) {
