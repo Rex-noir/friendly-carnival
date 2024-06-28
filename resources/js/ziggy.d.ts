@@ -9,6 +9,12 @@ declare module 'ziggy-js' {
             "name": "id",
             "required": true
         }
+    ],
+    "users.delete": [
+        {
+            "name": "id",
+            "required": true
+        }
     ]
 }
 }
