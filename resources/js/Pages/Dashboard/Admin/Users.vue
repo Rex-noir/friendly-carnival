@@ -136,7 +136,6 @@ const debounceSearch = debounce(search, 600);
         <UsersDataTable
             :key="usersData.current_page"
             v-if="usersData"
-            @update-table="() => handleUpdateTable()"
             :users="usersData.data"
         ></UsersDataTable>
         <TableSkeleton v-if="!usersData"></TableSkeleton>
