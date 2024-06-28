@@ -8,9 +8,13 @@ import Button from "primevue/button";
 import InputText from "primevue/inputtext";
 import UserUtils from "@/utils/user";
 import Spinner from "@/Pages/Components/Spinner.vue";
-import { debounce } from "lodash";
+import { debounce, reject } from "lodash";
 import axios from "axios";
+import ConfirmDialog from "primevue/confirmdialog";
+import { useConfirm } from "primevue/useconfirm";
+import Message from "primevue/message";
 
+const confirm = useConfirm();
 const props = defineProps<{
     users: User[] | User[][];
 }>();
@@ -20,6 +24,7 @@ const editEmail = reactive<boolean[]>([]);
 const emailModel = reactive<string[]>([]);
 const loading = reactive<boolean[]>([]);
 const updateStatus = reactive<string[]>([]);
+const deleteLoading = ref<boolean>();
 
 const rowClicked = (e: DataTableRowClickEvent) => {
     const id = e.data.id;
@@ -60,6 +65,48 @@ const updateEmail = async (id: number) => {
     }
 };
 
+const deleteUser = async (id: number) => {
+    try {
+        loading[id] = true;
+        await UserUtils.delete(id);
+        loading[id] = false;
+        updateStatus[id] = "Deleted!";
+        debounce(() => (updateStatus[id] = ""), 2000)();
+        debounce(() => updateTable(id), 2000)();
+    } catch (error) {
+        loading[id] = false;
+        updateStatus[id] = "Failed!";
+        debounce(() => (updateStatus[id] = ""), 2000)();
+    }
+};
+
+const updateTable = (id: number) => {
+    const userIndex = (props.users as User[]).findIndex(
+        (user) => user.id === id
+    );
+    if (userIndex !== -1) {
+        props.users.splice(userIndex, 1);
+        expandedRows.value = expandedRows.value.filter(
+            (user) => user.id !== id
+        );
+    }
+    editEmail.splice(id, 1);
+    emailModel.splice(id, 1);
+    loading.splice(id, 1);
+    updateStatus.splice(id, 1);
+};
+
+const deleteConfirm = (user: User) => {
+    confirm.require({
+        message: `This action can't be undone.`,
+        header: `${user.name}`,
+        icon: "pi pi-exclamation-triangle",
+        accept: () => {
+            deleteUser(user.id);
+        },
+    });
+};
+
 onMounted(() => {
     props.users.forEach((user) => {
         if (!Array.isArray(user)) {
@@ -72,6 +119,50 @@ onMounted(() => {
 });
 </script>
 <template>
+    <ConfirmDialog>
+        <template #container="{ message, acceptCallback, rejectCallback }">
+            <div
+                class="flex flex-col items-center p-5 bg-surface-0 dark:bg-surface-900 rounded-md"
+            >
+                <div
+                    class="rounded-full bg-slate-200 dark:bg-slate-800 text-white dark:text-surface-950 inline-flex justify-center items-center h-[6rem] w-[6rem] -mt-8"
+                >
+                    <i class="pi pi-trash text-5xl text-red-700"></i>
+                </div>
+                <span
+                    >Delete
+                    <span class="font-bold text-lg mb-2 mt-4">{{
+                        message.header
+                    }}</span>
+                    from Database?
+                </span>
+                <Message :closable="false" severity="warn">
+                    {{ message.message }}
+                </Message>
+
+                <div class="flex items-center gap-2 mt-4">
+                    <Button
+                        label="Cancel"
+                        @click="rejectCallback"
+                        class="w-[8rem]"
+                        outlined
+                    ></Button>
+                    <Button
+                        label="Delete"
+                        :loading="deleteLoading"
+                        severity="danger"
+                        @click="acceptCallback"
+                        class="w-[8rem]"
+                    >
+                        <template #loadingicon>
+                            <Spinner
+                                class="flex items-center justify-center"
+                            ></Spinner>
+                        </template>
+                    </Button>
+                </div>
+            </div> </template
+    ></ConfirmDialog>
     <div>
         <DataTable
             showGridLines
@@ -123,7 +214,9 @@ onMounted(() => {
                                     v-if="updateStatus[user.data.id]"
                                     :class="
                                         updateStatus[user.data.id] ===
-                                        'Updated!'
+                                            'Updated!' ||
+                                        updateStatus[user.data.id] ===
+                                            'Deleted!'
                                             ? 'text-green-500'
                                             : 'text-red-500'
                                     "
@@ -178,6 +271,7 @@ onMounted(() => {
                                 rounded
                                 class="!p-2 col-start-2"
                                 :label="`Delete`"
+                                @click="deleteConfirm(user.data)"
                                 severity="danger"
                             />
                         </div>
