@@ -5,6 +5,7 @@ import MainLayout from "./Layout/MainLayout.vue";
 import PrimeVue from "primevue/config";
 import Aura from "./presets/aura";
 import Ripple from "primevue/ripple";
+import ConfirmationService from "primevue/confirmationservice";
 
 import AuthLayout from "./Layout/AuthLayout.vue";
 import "primeicons/primeicons.css";
@@ -37,6 +38,7 @@ createInertiaApp({
                 ripple: true,
             })
             .directive("ripple", Ripple)
+            .use(ConfirmationService)
             .mount(el);
     },
 });
