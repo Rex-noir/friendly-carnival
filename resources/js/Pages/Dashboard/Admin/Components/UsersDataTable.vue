@@ -8,13 +8,12 @@ import Button from "primevue/button";
 import InputText from "primevue/inputtext";
 import UserUtils from "@/utils/user";
 import Spinner from "@/Pages/Components/Spinner.vue";
-import { debounce, reject } from "lodash";
+import { debounce } from "lodash";
 import axios from "axios";
-import ConfirmDialog from "primevue/confirmdialog";
 import { useConfirm } from "primevue/useconfirm";
-import Message from "primevue/message";
 
 const confirm = useConfirm();
+const emit = defineEmits<{ (e: "updateTable"): void }>();
 const props = defineProps<{
     users: User[] | User[][];
 }>();
@@ -24,7 +23,6 @@ const editEmail = reactive<boolean[]>([]);
 const emailModel = reactive<string[]>([]);
 const loading = reactive<boolean[]>([]);
 const updateStatus = reactive<string[]>([]);
-const deleteLoading = ref<boolean>();
 
 const rowClicked = (e: DataTableRowClickEvent) => {
     const id = e.data.id;
@@ -72,7 +70,9 @@ const deleteUser = async (id: number) => {
         loading[id] = false;
         updateStatus[id] = "Deleted!";
         debounce(() => (updateStatus[id] = ""), 2000)();
-        debounce(() => updateTable(id), 2000)();
+        createRefsForTable();
+        emit("updateTable");
+        debounce(() => updateTableOnDelete(id), 1000)();
     } catch (error) {
         loading[id] = false;
         updateStatus[id] = "Failed!";
@@ -80,7 +80,7 @@ const deleteUser = async (id: number) => {
     }
 };
 
-const updateTable = (id: number) => {
+const updateTableOnDelete = (id: number) => {
     const userIndex = (props.users as User[]).findIndex(
         (user) => user.id === id
     );
@@ -90,10 +90,6 @@ const updateTable = (id: number) => {
             (user) => user.id !== id
         );
     }
-    editEmail.splice(id, 1);
-    emailModel.splice(id, 1);
-    loading.splice(id, 1);
-    updateStatus.splice(id, 1);
 };
 
 const deleteConfirm = (user: User) => {
@@ -107,7 +103,7 @@ const deleteConfirm = (user: User) => {
     });
 };
 
-onMounted(() => {
+const createRefsForTable = () => {
     props.users.forEach((user) => {
         if (!Array.isArray(user)) {
             emailModel[user.id] = user.email;
@@ -116,53 +112,13 @@ onMounted(() => {
             updateStatus[user.id] = "";
         }
     });
+};
+
+onMounted(() => {
+    createRefsForTable();
 });
 </script>
 <template>
-    <ConfirmDialog>
-        <template #container="{ message, acceptCallback, rejectCallback }">
-            <div
-                class="flex flex-col items-center p-5 bg-surface-0 dark:bg-surface-900 rounded-md"
-            >
-                <div
-                    class="rounded-full bg-slate-200 dark:bg-slate-800 text-white dark:text-surface-950 inline-flex justify-center items-center h-[6rem] w-[6rem] -mt-8"
-                >
-                    <i class="pi pi-trash text-5xl text-red-700"></i>
-                </div>
-                <span
-                    >Delete
-                    <span class="font-bold text-lg mb-2 mt-4">{{
-                        message.header
-                    }}</span>
-                    from Database?
-                </span>
-                <Message :closable="false" severity="warn">
-                    {{ message.message }}
-                </Message>
-
-                <div class="flex items-center gap-2 mt-4">
-                    <Button
-                        label="Cancel"
-                        @click="rejectCallback"
-                        class="w-[8rem]"
-                        outlined
-                    ></Button>
-                    <Button
-                        label="Delete"
-                        :loading="deleteLoading"
-                        severity="danger"
-                        @click="acceptCallback"
-                        class="w-[8rem]"
-                    >
-                        <template #loadingicon>
-                            <Spinner
-                                class="flex items-center justify-center"
-                            ></Spinner>
-                        </template>
-                    </Button>
-                </div>
-            </div> </template
-    ></ConfirmDialog>
     <div>
         <DataTable
             showGridLines

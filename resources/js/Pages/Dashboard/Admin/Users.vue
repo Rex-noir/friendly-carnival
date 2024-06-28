@@ -10,9 +10,11 @@ import UsersDataTable from "./Components/UsersDataTable.vue";
 import TableSkeleton from "./Components/TableSkeleton.vue";
 import Spinner from "@/Pages/Components/Spinner.vue";
 import PaginationT from "@/Pages/Components/PaginationT.vue";
+import ConfirmDialog from "primevue/confirmdialog";
+import Button from "primevue/button";
+import Message from "primevue/message";
 
-let usersData = ref<Pagination<User[]>>();
-const users = ref<User[][]>([]);
+let usersData = ref<Pagination<User[]> | null>(null);
 const searchModel = ref();
 
 onMounted(async () => {
@@ -22,8 +24,7 @@ const fetchData = async (url?: string) => {
     try {
         let data;
         data = await UserUtils.index(url);
-        usersData.value = data;
-        users.value = data.data;
+        usersData.value = { ...data }; // Create a new object
     } catch (error) {
         throw error;
     }
@@ -43,9 +44,64 @@ const search = async () => {
     }
 };
 
+const handleUpdateTable = () => {
+    if (
+        usersData.value &&
+        usersData.value.links &&
+        usersData.value.current_page
+    ) {
+        fetchData(
+            usersData.value.links[usersData.value.current_page].url as string
+        );
+    }
+};
+
 const debounceSearch = debounce(search, 600);
 </script>
 <template>
+    <ConfirmDialog>
+        <template #container="{ message, acceptCallback, rejectCallback }">
+            <div
+                class="flex flex-col items-center p-5 bg-surface-0 dark:bg-surface-900 rounded-md"
+            >
+                <div
+                    class="rounded-full bg-slate-200 dark:bg-slate-800 text-white dark:text-surface-950 inline-flex justify-center items-center h-[6rem] w-[6rem] -mt-8"
+                >
+                    <i class="pi pi-trash text-5xl text-red-700"></i>
+                </div>
+                <span
+                    >Delete
+                    <span class="font-bold text-lg mb-2 mt-4">{{
+                        message.header
+                    }}</span>
+                    from Database?
+                </span>
+                <Message :closable="false" severity="warn">
+                    {{ message.message }}
+                </Message>
+
+                <div class="flex items-center gap-2 mt-4">
+                    <Button
+                        label="Cancel"
+                        @click="rejectCallback"
+                        class="w-[8rem]"
+                        outlined
+                    ></Button>
+                    <Button
+                        label="Delete"
+                        severity="danger"
+                        @click="acceptCallback"
+                        class="w-[8rem]"
+                    >
+                        <template #loadingicon>
+                            <Spinner
+                                class="flex items-center justify-center"
+                            ></Spinner>
+                        </template>
+                    </Button>
+                </div>
+            </div> </template
+    ></ConfirmDialog>
     <div
         class="overlay"
         v-if="searchModel && result"
@@ -72,20 +128,20 @@ const debounceSearch = debounce(search, 600);
             >
                 <UsersDataTable
                     :key="result.length"
-                    class="z-10 rounded-lg"
                     :users="result"
+                    @update-table="() => handleUpdateTable()"
                 ></UsersDataTable>
             </div>
-            <!-- Form -->
         </div>
         <UsersDataTable
             :key="usersData.current_page"
             v-if="usersData"
-            :users="users"
+            @update-table="() => handleUpdateTable()"
+            :users="usersData.data"
         ></UsersDataTable>
         <TableSkeleton v-if="!usersData"></TableSkeleton>
     </div>
-    <div class="w-[994] justify-center flex overflow-auto" v-if="usersData">
+    <div class="w-full justify-center flex overflow-auto" v-if="usersData">
         <PaginationT
             :key="usersData.current_page"
             @paginate="(url:string)=>fetchData(url)"
