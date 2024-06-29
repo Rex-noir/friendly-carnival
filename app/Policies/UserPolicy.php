@@ -40,6 +40,11 @@ class UserPolicy
         //
     }
 
+    public function ban(User $user): bool
+    {
+        return false;
+    }
+
     /**
      * Determine whether the user can update the model.
      */
