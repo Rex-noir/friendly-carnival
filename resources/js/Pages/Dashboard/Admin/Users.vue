@@ -33,6 +33,7 @@ const debounceFetch = debounce(fetchData, 500);
 
 const loading = ref<boolean>();
 const result = ref<User[] | []>();
+const shouldResetExpandedRows = ref({ update: true });
 
 const search = async () => {
     try {
@@ -53,6 +54,8 @@ const handleUpdateTable = () => {
         fetchData(
             usersData.value.links[usersData.value.current_page].url as string
         );
+        shouldResetExpandedRows.value.update =
+            !shouldResetExpandedRows.value.update;
     }
 };
 
@@ -134,7 +137,7 @@ const debounceSearch = debounce(search, 600);
             </div>
         </div>
         <UsersDataTable
-            :key="usersData.current_page"
+            :key="shouldResetExpandedRows.update ? 'pulung' : 'malung'"
             v-if="usersData"
             :users="usersData.data"
         ></UsersDataTable>
