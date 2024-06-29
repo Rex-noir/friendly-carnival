@@ -7,7 +7,7 @@ const { paginator } = props;
 function isFirstOrLastOrDots(
     index: number,
     links_length: number,
-    label: string
+    label: string,
 ) {
     return index === 0 || index === links_length - 1 || label.includes("...");
 }
@@ -15,16 +15,16 @@ function isFirstOrLastOrDots(
 const onFirstPage = computed(() => paginator.current_page === 1);
 
 const hasMorePages = computed(
-    () => paginator.current_page < paginator.last_page
+    () => paginator.current_page < paginator.last_page,
 );
 
 const displayLinks = computed(() =>
-    props.paginator.links.filter((link, index) => Number(link.label) === index)
+    props.paginator.links.filter((link, index) => Number(link.label) === index),
 );
 </script>
 
 <template>
-    <div class="flex justify-center flex-col items-center gap-2">
+    <div class="flex flex-col items-center justify-center gap-2">
         <div>
             <p>
                 Showing <span class="font-medium">{{ paginator.from }}</span> to
@@ -37,13 +37,13 @@ const displayLinks = computed(() =>
             class="flex items-center justify-between"
             role="navigation"
         >
-            <div class="flex justify-between flex-1 sm:hidden">
+            <div class="flex flex-1 justify-between sm:hidden">
                 <span
                     v-if="onFirstPage"
-                    class="relative inline-flex items-center cursor-pointer px-4 py-2 text-sm font-medium text-gray-500 bg-gray-100 border border-gray-300 leading-5 rounded-md"
+                    class="relative inline-flex cursor-pointer items-center rounded-md border border-gray-300 bg-gray-100 px-4 py-2 text-sm font-medium leading-5 text-gray-500"
                 >
                     <svg
-                        class="w-5 h-5"
+                        class="h-5 w-5"
                         fill="currentColor"
                         viewBox="0 0 20 20"
                     >
@@ -57,10 +57,10 @@ const displayLinks = computed(() =>
                 <span
                     @click="$emit('paginate', paginator.prev_page_url)"
                     v-else
-                    class="relative cursor-pointer inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 leading-5 rounded-md hover:text-gray-500 focus:outline-none focus:ring ring-gray-300 focus:border-blue-300 active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150"
+                    class="relative inline-flex cursor-pointer items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium leading-5 text-gray-700 ring-gray-300 transition duration-150 ease-in-out hover:text-gray-500 focus:border-blue-300 focus:outline-none focus:ring active:bg-gray-100 active:text-gray-700"
                 >
                     <svg
-                        class="w-5 h-5"
+                        class="h-5 w-5"
                         fill="currentColor"
                         viewBox="0 0 20 20"
                     >
@@ -74,10 +74,10 @@ const displayLinks = computed(() =>
                 <span
                     @click="$emit('paginate', paginator.next_page_url)"
                     v-if="hasMorePages"
-                    class="relative inline-flex items-center cursor-pointer px-4 py-2 ml-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 leading-5 rounded-md hover:text-gray-500 focus:outline-none focus:ring ring-gray-300 focus:border-blue-300 active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150"
+                    class="relative ml-3 inline-flex cursor-pointer items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium leading-5 text-gray-700 ring-gray-300 transition duration-150 ease-in-out hover:text-gray-500 focus:border-blue-300 focus:outline-none focus:ring active:bg-gray-100 active:text-gray-700"
                 >
                     <svg
-                        class="w-5 h-5"
+                        class="h-5 w-5"
                         fill="currentColor"
                         viewBox="0 0 20 20"
                     >
@@ -90,10 +90,10 @@ const displayLinks = computed(() =>
                 </span>
                 <span
                     v-else
-                    class="relative inline-flex items-center px-4 py-2 ml-3 cursor-pointer text-sm font-medium text-gray-500 bg-gray-100 border border-gray-300 leading-5 rounded-md"
+                    class="relative ml-3 inline-flex cursor-pointer items-center rounded-md border border-gray-300 bg-gray-100 px-4 py-2 text-sm font-medium leading-5 text-gray-500"
                 >
                     <svg
-                        class="w-5 h-5"
+                        class="h-5 w-5"
                         fill="currentColor"
                         viewBox="0 0 20 20"
                     >
@@ -106,20 +106,20 @@ const displayLinks = computed(() =>
                 </span>
             </div>
             <div
-                class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between"
+                class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between"
             >
                 <div class="flex gap-2">
                     <span
-                        class="relative z-0 inline-flex gap-2 shadow-sm rounded-md"
+                        class="relative z-0 inline-flex gap-2 rounded-md shadow-sm"
                     >
                         <span
                             v-if="onFirstPage"
                             aria-disabled="true"
                             aria-hidden="true"
-                            class="relative inline-flex items-center px-2 py-2 text-sm font-medium text-gray-500 bg-gray-100 border border-gray-300 cursor-default rounded-l-md leading-5"
+                            class="relative inline-flex cursor-default items-center rounded-l-md border border-gray-300 bg-gray-100 px-2 py-2 text-sm font-medium leading-5 text-gray-500"
                         >
                             <svg
-                                class="w-5 h-5"
+                                class="h-5 w-5"
                                 fill="currentColor"
                                 viewBox="0 0 20 20"
                             >
@@ -133,11 +133,11 @@ const displayLinks = computed(() =>
                         <span
                             v-else
                             @click="$emit('paginate', paginator.prev_page_url)"
-                            class="relative inline-flex items-center px-2 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-l-md leading-5 hover:text-gray-400 focus:z-10 focus:outline-none focus:ring ring-gray-300 focus:border-blue-300 active:bg-gray-100 active:text-gray-500 transition ease-in-out duration-150"
+                            class="relative inline-flex items-center rounded-l-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium leading-5 text-gray-500 ring-gray-300 transition duration-150 ease-in-out hover:text-gray-400 focus:z-10 focus:border-blue-300 focus:outline-none focus:ring active:bg-gray-100 active:text-gray-500"
                             rel="prev"
                         >
                             <svg
-                                class="w-5 h-5"
+                                class="h-5 w-5"
                                 fill="currentColor"
                                 viewBox="0 0 20 20"
                             >
@@ -155,21 +155,21 @@ const displayLinks = computed(() =>
                                         !isFirstOrLastOrDots(
                                             paginator.current_page,
                                             paginator.links.length,
-                                            link.label
+                                            link.label,
                                         )
                                     "
                                     :class="{
-                                        '!bg-lime-200 ': link.active === true,
+                                        '!bg-lime-200': link.active === true,
                                     }"
                                     @click="$emit('paginate', link.url)"
-                                    class="relative inline-flex rounded-sm bg-white items-center px-4 py-2 -ml-px text-sm font-medium cursor-pointer text-gray-700 border border-gray-300 leading-5 hover:text-gray-800 focus:z-10 focus:outline-none focus:ring ring-gray-300 focus:border-blue-300 active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150"
+                                    class="relative -ml-px inline-flex cursor-pointer items-center rounded-sm border border-gray-300 bg-white px-4 py-2 text-sm font-medium leading-5 text-gray-700 ring-gray-300 transition duration-150 ease-in-out hover:text-gray-800 focus:z-10 focus:border-blue-300 focus:outline-none focus:ring active:bg-gray-100 active:text-gray-700"
                                 >
                                     {{ link.label }}
                                 </span>
                                 <span
                                     v-else-if="link.label === '...'"
                                     aria-disabled="true"
-                                    class="relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium text-gray-700 bg-white border border-gray-300 cursor-default leading-5"
+                                    class="relative -ml-px inline-flex cursor-default items-center border border-gray-300 bg-white px-4 py-2 text-sm font-medium leading-5 text-gray-700"
                                 >
                                     {{ link.label }}
                                 </span>
@@ -178,10 +178,10 @@ const displayLinks = computed(() =>
                         <span
                             v-if="hasMorePages"
                             @click="$emit('paginate', paginator.next_page_url)"
-                            class="relative inline-flex items-center px-2 py-2 -ml-px cursor-pointer text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-r-md leading-5 hover:text-gray-400 focus:z-10 focus:outline-none focus:ring ring-gray-300 focus:border-blue-300 active:bg-gray-100 active:text-gray-500 transition ease-in-out duration-150"
+                            class="relative -ml-px inline-flex cursor-pointer items-center rounded-r-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium leading-5 text-gray-500 ring-gray-300 transition duration-150 ease-in-out hover:text-gray-400 focus:z-10 focus:border-blue-300 focus:outline-none focus:ring active:bg-gray-100 active:text-gray-500"
                         >
                             <svg
-                                class="w-5 h-5"
+                                class="h-5 w-5"
                                 fill="currentColor"
                                 viewBox="0 0 20 20"
                             >
@@ -196,10 +196,10 @@ const displayLinks = computed(() =>
                             v-else
                             aria-disabled="true"
                             aria-hidden="true"
-                            class="relative inline-flex items-center px-2 py-2 cursor-pointer -ml-px text-sm font-medium text-gray-500 bg-gray-100 border border-gray-300 rounded-r-md leading-5"
+                            class="relative -ml-px inline-flex cursor-pointer items-center rounded-r-md border border-gray-300 bg-gray-100 px-2 py-2 text-sm font-medium leading-5 text-gray-500"
                         >
                             <svg
-                                class="w-5 h-5"
+                                class="h-5 w-5"
                                 fill="currentColor"
                                 viewBox="0 0 20 20"
                             >

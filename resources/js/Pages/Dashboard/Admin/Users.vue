@@ -50,7 +50,7 @@ const handleUpdateTable = async () => {
         usersData.value.current_page
     ) {
         await fetchData(
-            usersData.value.links[usersData.value.current_page].url as string
+            usersData.value.links[usersData.value.current_page].url as string,
         );
         shouldResetExpandedRows.value = !shouldResetExpandedRows.value;
     }
@@ -62,10 +62,10 @@ const debounceSearch = debounce(search, 600);
     <ConfirmDialog>
         <template #container="{ message, acceptCallback, rejectCallback }">
             <div
-                class="flex flex-col gap-1 items-center p-5 bg-surface-0 dark:bg-surface-900 rounded-md"
+                class="flex flex-col items-center gap-1 rounded-md bg-surface-0 p-5 dark:bg-surface-900"
             >
                 <div
-                    class="rounded-full bg-slate-200 dark:bg-slate-800 text-white dark:text-surface-950 inline-flex justify-center items-center h-[6rem] w-[6rem] -mt-8"
+                    class="-mt-8 inline-flex h-[6rem] w-[6rem] items-center justify-center rounded-full bg-slate-200 text-white dark:bg-slate-800 dark:text-surface-950"
                 >
                     <i :class="message.icon" class="text-5xl text-red-700"></i>
                 </div>
@@ -81,7 +81,7 @@ const debounceSearch = debounce(search, 600);
                     {{ message.message }}
                 </Message>
 
-                <div class="flex items-center gap-2 mt-4">
+                <div class="mt-4 flex items-center gap-2">
                     <Button
                         label="Cancel"
                         @click="rejectCallback"
@@ -108,8 +108,8 @@ const debounceSearch = debounce(search, 600);
         v-if="searchModel && result"
         @click="result = undefined"
     ></div>
-    <div class="relative card p-2">
-        <div class="mb-2 relative z-10">
+    <div class="card relative p-2">
+        <div class="relative z-10 mb-2">
             <IconField>
                 <InputIcon>
                     <Spinner v-if="loading" />
@@ -125,7 +125,7 @@ const debounceSearch = debounce(search, 600);
             </IconField>
             <div
                 v-if="result && result.length > 0"
-                class="absolute w-full rounded-lg overflow-auto max-h-[400px] z-10 mt-2"
+                class="absolute z-10 mt-2 max-h-[400px] w-full overflow-auto rounded-lg"
             >
                 <UsersDataTable
                     :key="result.length"
@@ -141,10 +141,10 @@ const debounceSearch = debounce(search, 600);
         ></UsersDataTable>
         <TableSkeleton v-if="!usersData"></TableSkeleton>
     </div>
-    <div class="w-full justify-center flex overflow-auto" v-if="usersData">
+    <div class="flex w-full justify-center overflow-auto" v-if="usersData">
         <PaginationT
             :key="usersData.current_page"
-            @paginate="(url:string)=>fetchData(url)"
+            @paginate="(url: string) => fetchData(url)"
             :paginator="usersData"
         ></PaginationT>
     </div>
