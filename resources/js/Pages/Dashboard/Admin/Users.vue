@@ -108,7 +108,7 @@ const debounceSearch = debounce(search, 600);
         v-if="searchModel && result"
         @click="result = undefined"
     ></div>
-    <div class="relative card p-2 mx-auto md:w-[50%]">
+    <div class="relative card p-2">
         <div class="mb-2 relative z-10">
             <IconField>
                 <InputIcon>
