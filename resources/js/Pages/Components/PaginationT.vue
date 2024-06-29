@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { Pagination } from "@/types/page.types";
-import Button from "primevue/button";
 import { computed } from "vue";
 const props = defineProps<{ paginator: Pagination<User[]> }>();
 const { paginator } = props;
@@ -19,9 +18,6 @@ const hasMorePages = computed(
     () => paginator.current_page < paginator.last_page
 );
 
-const nextPageUrl = computed(() => paginator.next_page_url);
-
-const previousPageUrl = () => paginator.prev_page_url;
 const displayLinks = computed(() =>
     props.paginator.links.filter((link, index) => Number(link.label) === index)
 );
@@ -42,7 +38,7 @@ const displayLinks = computed(() =>
             role="navigation"
         >
             <div class="flex justify-between flex-1 sm:hidden">
-                <Button
+                <span
                     v-if="onFirstPage"
                     class="relative inline-flex items-center cursor-pointer px-4 py-2 text-sm font-medium text-gray-500 bg-gray-100 border border-gray-300 leading-5 rounded-md"
                 >
@@ -57,11 +53,10 @@ const displayLinks = computed(() =>
                             fill-rule="evenodd"
                         />
                     </svg>
-                </Button>
-                <Button
+                </span>
+                <span
                     @click="$emit('paginate', paginator.prev_page_url)"
                     v-else
-                    :href="previousPageUrl"
                     class="relative cursor-pointer inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 leading-5 rounded-md hover:text-gray-500 focus:outline-none focus:ring ring-gray-300 focus:border-blue-300 active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150"
                 >
                     <svg
@@ -75,12 +70,11 @@ const displayLinks = computed(() =>
                             fill-rule="evenodd"
                         />
                     </svg>
-                </Button>
-                <Button
-                    @click="$emit('paginate', nextPageUrl)"
+                </span>
+                <span
+                    @click="$emit('paginate', paginator.next_page_url)"
                     v-if="hasMorePages"
-                    :href="nextPageUrl"
-                    class="relative inline-flex items-center px-4 py-2 ml-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 leading-5 rounded-md hover:text-gray-500 focus:outline-none focus:ring ring-gray-300 focus:border-blue-300 active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150"
+                    class="relative inline-flex items-center cursor-pointer px-4 py-2 ml-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 leading-5 rounded-md hover:text-gray-500 focus:outline-none focus:ring ring-gray-300 focus:border-blue-300 active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150"
                 >
                     <svg
                         class="w-5 h-5"
@@ -93,10 +87,10 @@ const displayLinks = computed(() =>
                             fill-rule="evenodd"
                         />
                     </svg>
-                </Button>
-                <Button
+                </span>
+                <span
                     v-else
-                    class="relative inline-flex items-center px-4 py-2 ml-3 text-sm font-medium text-gray-500 bg-gray-100 border border-gray-300 cursor-default leading-5 rounded-md"
+                    class="relative inline-flex items-center px-4 py-2 ml-3 cursor-pointer text-sm font-medium text-gray-500 bg-gray-100 border border-gray-300 leading-5 rounded-md"
                 >
                     <svg
                         class="w-5 h-5"
@@ -109,7 +103,7 @@ const displayLinks = computed(() =>
                             fill-rule="evenodd"
                         />
                     </svg>
-                </Button>
+                </span>
             </div>
             <div
                 class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between"
@@ -118,7 +112,7 @@ const displayLinks = computed(() =>
                     <span
                         class="relative z-0 inline-flex gap-2 shadow-sm rounded-md"
                     >
-                        <Button
+                        <span
                             v-if="onFirstPage"
                             aria-disabled="true"
                             aria-hidden="true"
@@ -135,10 +129,10 @@ const displayLinks = computed(() =>
                                     fill-rule="evenodd"
                                 />
                             </svg>
-                        </Button>
-                        <Button
+                        </span>
+                        <span
                             v-else
-                            @click="$emit('paginate', previousPageUrl)"
+                            @click="$emit('paginate', paginator.prev_page_url)"
                             class="relative inline-flex items-center px-2 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-l-md leading-5 hover:text-gray-400 focus:z-10 focus:outline-none focus:ring ring-gray-300 focus:border-blue-300 active:bg-gray-100 active:text-gray-500 transition ease-in-out duration-150"
                             rel="prev"
                         >
@@ -153,10 +147,10 @@ const displayLinks = computed(() =>
                                     fill-rule="evenodd"
                                 />
                             </svg>
-                        </Button>
+                        </span>
                         <div class="flex gap-2">
                             <div v-for="link in displayLinks">
-                                <Button
+                                <span
                                     v-if="
                                         !isFirstOrLastOrDots(
                                             paginator.current_page,
@@ -165,13 +159,13 @@ const displayLinks = computed(() =>
                                         )
                                     "
                                     :class="{
-                                        'bg-blue-200': link.active === true,
+                                        '!bg-lime-200 ': link.active === true,
                                     }"
                                     @click="$emit('paginate', link.url)"
-                                    class="relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium text-gray-700 bg-white border border-gray-300 leading-5 hover:text-gray-500 focus:z-10 focus:outline-none focus:ring ring-gray-300 focus:border-blue-300 active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150"
+                                    class="relative inline-flex rounded-sm bg-white items-center px-4 py-2 -ml-px text-sm font-medium cursor-pointer text-gray-700 border border-gray-300 leading-5 hover:text-gray-800 focus:z-10 focus:outline-none focus:ring ring-gray-300 focus:border-blue-300 active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150"
                                 >
                                     {{ link.label }}
-                                </Button>
+                                </span>
                                 <span
                                     v-else-if="link.label === '...'"
                                     aria-disabled="true"
@@ -181,10 +175,10 @@ const displayLinks = computed(() =>
                                 </span>
                             </div>
                         </div>
-                        <Button
+                        <span
                             v-if="hasMorePages"
-                            @click="$emit('paginate', nextPageUrl)"
-                            class="relative inline-flex items-center px-2 py-2 -ml-px text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-r-md leading-5 hover:text-gray-400 focus:z-10 focus:outline-none focus:ring ring-gray-300 focus:border-blue-300 active:bg-gray-100 active:text-gray-500 transition ease-in-out duration-150"
+                            @click="$emit('paginate', paginator.next_page_url)"
+                            class="relative inline-flex items-center px-2 py-2 -ml-px cursor-pointer text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-r-md leading-5 hover:text-gray-400 focus:z-10 focus:outline-none focus:ring ring-gray-300 focus:border-blue-300 active:bg-gray-100 active:text-gray-500 transition ease-in-out duration-150"
                         >
                             <svg
                                 class="w-5 h-5"
@@ -197,12 +191,12 @@ const displayLinks = computed(() =>
                                     fill-rule="evenodd"
                                 />
                             </svg>
-                        </Button>
-                        <Button
+                        </span>
+                        <span
                             v-else
                             aria-disabled="true"
                             aria-hidden="true"
-                            class="relative inline-flex items-center px-2 py-2 -ml-px text-sm font-medium text-gray-500 bg-gray-100 border border-gray-300 cursor-default rounded-r-md leading-5"
+                            class="relative inline-flex items-center px-2 py-2 cursor-pointer -ml-px text-sm font-medium text-gray-500 bg-gray-100 border border-gray-300 rounded-r-md leading-5"
                         >
                             <svg
                                 class="w-5 h-5"
@@ -215,7 +209,7 @@ const displayLinks = computed(() =>
                                     fill-rule="evenodd"
                                 />
                             </svg>
-                        </Button>
+                        </span>
                     </span>
                 </div>
             </div>
