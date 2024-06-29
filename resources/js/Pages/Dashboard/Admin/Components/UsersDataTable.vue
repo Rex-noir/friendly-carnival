@@ -10,7 +10,7 @@ import Spinner from "@/Pages/Components/Spinner.vue";
 import { debounce } from "lodash";
 import axios from "axios";
 import { useConfirm } from "primevue/useconfirm";
-import { UserActions, UserStatus } from "@/types/actions.types";
+import { UserActions, UserStatus } from "@/types/enums.types";
 import Tag from "primevue/tag";
 
 const confirm = useConfirm();
@@ -79,14 +79,14 @@ const handleTableActions = async (id: number, action: UserActions) => {
 
 const updateTableOnActions = (id: number, action: UserActions) => {
     const userIndex = (props.users as User[]).findIndex(
-        (user) => user.id === id
+        (user) => user.id === id,
     );
     if (userIndex !== -1) {
         switch (action) {
             case UserActions.DELETE:
                 props.users.splice(userIndex, 1);
                 expandedRows.value = expandedRows.value.filter(
-                    (user) => user.id !== id
+                    (user) => user.id !== id,
                 );
                 break;
             case UserActions.BAN:
@@ -157,7 +157,7 @@ onMounted(() => {
                         class="font-bold"
                         :class="
                             expandedRows.findIndex(
-                                (r) => r.id === row.data.id
+                                (r) => r.id === row.data.id,
                             ) !== -1
                                 ? 'text-red-500'
                                 : ''
@@ -174,7 +174,7 @@ onMounted(() => {
                 style="width: 1rem"
             >
                 <template #body="row"
-                    ><div class="hidden justify-start sm:flex gap-2 w-full">
+                    ><div class="hidden w-full justify-start gap-2 sm:flex">
                         <Tag
                             :severity="
                                 row.data.role === 'admin' ? 'warning' : 'info'
@@ -190,7 +190,7 @@ onMounted(() => {
                 style="width: 2rem"
             >
                 <template #body="row"
-                    ><div class="hidden sm:flex gap-2 w-full">
+                    ><div class="hidden w-full gap-2 sm:flex">
                         <Tag
                             :value="row.data.status"
                             class="w-full"
@@ -216,13 +216,13 @@ onMounted(() => {
                 <Card class="!border-none !shadow-none">
                     <template #title
                         ><div
-                            class="grid grid-cols-2 gap-2 place-content-center items-center"
+                            class="grid grid-cols-2 place-content-center items-center gap-2"
                         >
                             <span class="col-span-1 row-start-1">
                                 {{ user.data.name }}</span
                             >
                             <div
-                                class="sm:hidden flex row-start-2 gap-2 col-start-1"
+                                class="col-start-1 row-start-2 flex gap-2 sm:hidden"
                             >
                                 <Tag
                                     :severity="
@@ -242,7 +242,7 @@ onMounted(() => {
                                 ></Tag>
                             </div>
                             <div
-                                class="justify-self-end row-start-2 sm:row-start-1 col-start-2"
+                                class="col-start-2 row-start-2 justify-self-end sm:row-start-1"
                             >
                                 <span
                                     v-if="updateStatus[user.data.id]"
@@ -260,9 +260,9 @@ onMounted(() => {
                             </div></div
                     ></template>
                     <template #content
-                        ><div class="grid gap-3 w-full grid-cols-2">
+                        ><div class="grid w-full grid-cols-2 gap-3">
                             <div
-                                class="grid grid-cols-11 col-span-2 w-full gap-1"
+                                class="col-span-2 grid w-full grid-cols-11 gap-1"
                             >
                                 <InputText
                                     v-model="emailModel[user.data.id]"
@@ -286,7 +286,7 @@ onMounted(() => {
                                             ? 'Save'
                                             : 'Edit'
                                     "
-                                    class="col-start-12 focus:!ring-0 !border-gray-500 dark:!border-slate-400"
+                                    class="col-start-12 !border-gray-500 focus:!ring-0 dark:!border-slate-400"
                                     ><template #loadingicon>
                                         <Spinner
                                             class="flex items-center justify-center"
@@ -297,7 +297,7 @@ onMounted(() => {
 
                             <Button
                                 rounded
-                                class="!p-2 col-start-1"
+                                class="col-start-1 !p-2"
                                 :label="
                                     user.data.status === UserStatus.BANNED
                                         ? 'Restore'
@@ -308,7 +308,7 @@ onMounted(() => {
                             />
                             <Button
                                 rounded
-                                class="!p-2 col-start-2"
+                                class="col-start-2 !p-2"
                                 :label="`Delete`"
                                 @click="deleteConfirm(user.data)"
                                 severity="danger"
