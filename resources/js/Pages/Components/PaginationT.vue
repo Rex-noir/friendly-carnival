@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Pagination, User } from "@/types/users.interface";
+import { Pagination, User } from "@/types/page.interfaces";
 import Button from "primevue/button";
 import { ref } from "vue";
 

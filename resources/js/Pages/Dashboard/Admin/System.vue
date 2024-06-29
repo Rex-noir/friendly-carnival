@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { SystemInfo } from "@/types/dashboard.interface";
+import { SystemInfo } from "@/types/dashboard.types";
 import { usePage } from "@inertiajs/vue3";
 import Card from "primevue/card";
 
@@ -7,7 +7,6 @@ import { ref } from "vue";
 const systemInfo = ref<SystemInfo>(usePage().props.systemStatus as SystemInfo);
 const { database, host, client, server } = systemInfo.value;
 const { hardware, software, uptime } = server;
-
 </script>
 <template>
     <div class="card p-2 flex flex-col gap-2">

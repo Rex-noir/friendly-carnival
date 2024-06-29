@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { RealTimeSystemInfo } from "@/types/dashboard.interface";
+import { RealTimeSystemInfo } from "@/types/dashboard.types";
 import Card from "primevue/card";
 import StatusSkeleton from "./Components/StatusSkeleton.vue";
 
