@@ -43,4 +43,10 @@ class UserFactory extends Factory
             'email_verified_at' => null,
         ]);
     }
+
+    /**Factorize users with banned status */
+    public function banned(): static
+    {
+        return $this->state(fn (array $attributes) => ['status' => 'banned', 'password' => 'test']);
+    }
 }
