@@ -28,4 +28,5 @@ Route::prefix('users')->group(function () {
 
     Route::put('/update/{id}', [UserController::class, 'update'])->name('users.update');
     Route::delete('/delete/{id}', [UserController::class, 'destroy'])->name('users.delete');
+    Route::post('/ban/{id}', [UserController::class, 'ban'])->name('users.ban');
 })->middleware('auth');
