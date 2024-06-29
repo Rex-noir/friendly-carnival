@@ -2,7 +2,7 @@
 import DataTable, { DataTableRowClickEvent } from "primevue/datatable";
 import Column from "primevue/column";
 import { User } from "@/types/users.interface";
-import { onMounted, reactive, ref } from "vue";
+import { onMounted, reactive, ref, watch } from "vue";
 import Card from "primevue/card";
 import Button from "primevue/button";
 import InputText from "primevue/inputtext";
@@ -35,48 +35,40 @@ const rowClicked = (e: DataTableRowClickEvent) => {
     }
 };
 
-const toggleClicked = (id: number) => {
+const updateEmail = (id: number) => {
     editEmail[id] = !editEmail[id];
-    updateEmail(id);
-};
-
-const updateEmail = async (id: number) => {
     if (!editEmail[id] && emailModel[id]) {
-        try {
-            loading[id] = true;
-            updateStatus[id] = "";
-            const data = await UserUtils.update({
-                id: id,
-                email: emailModel[id],
-            });
-            loading[id] = false;
-            updateStatus[id] = "Updated!";
-            debounce(() => (updateStatus[id] = ""), 2000)();
-        } catch (error) {
-            if (axios.isAxiosError(error)) {
-                emailModel[id] = error.response?.data.email;
-                loading[id] = false;
-                updateStatus[id] = "Invalid Email";
-                debounce(() => (updateStatus[id] = ""), 2000)();
-            }
-        }
+        handleTableActions(id, "update");
     }
 };
-
-const deleteUser = async (id: number) => {
+const handleTableActions = async (id: number, action: "update" | "delete") => {
     try {
         loading[id] = true;
-        await UserUtils.delete(id);
+        updateStatus[id] = "";
+
+        if (action === "update") {
+            await UserUtils.update({ id: id, email: emailModel[id] });
+            updateStatus[id] = "Updated!";
+        } else {
+            await UserUtils.delete(id);
+            updateStatus[id] = "Deleted!";
+            createRefsForTable();
+            updateTableOnDelete(id);
+            emit("updateTable");
+        }
         loading[id] = false;
-        updateStatus[id] = "Deleted!";
         debounce(() => (updateStatus[id] = ""), 2000)();
-        createRefsForTable();
-        emit("updateTable");
-        debounce(() => updateTableOnDelete(id), 1000)();
     } catch (error) {
         loading[id] = false;
         updateStatus[id] = "Failed!";
         debounce(() => (updateStatus[id] = ""), 2000)();
+
+        if (axios.isAxiosError(error)) {
+            if (error.response?.data.email) {
+                emailModel[id] = error.response.data.email;
+            }
+        }
+        throw error;
     }
 };
 
@@ -98,7 +90,7 @@ const deleteConfirm = (user: User) => {
         header: `${user.name}`,
         icon: "pi pi-exclamation-triangle",
         accept: () => {
-            deleteUser(user.id);
+            handleTableActions(user.id, "delete");
         },
     });
 };
@@ -197,7 +189,7 @@ onMounted(() => {
                                 <Button
                                     :loading="loading[user.data.id]"
                                     outlined
-                                    @click="toggleClicked(user.data.id)"
+                                    @click="updateEmail(user.data.id)"
                                     :icon="
                                         editEmail[user.data.id]
                                             ? 'pi pi-check'
