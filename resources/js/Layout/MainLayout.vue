@@ -49,11 +49,7 @@ const items = ref([
 <template>
     <header>
         <div class="card">
-            <MegaMenu
-                :model="items"
-                class="p-4 bg-surface-0 shadow-md"
-                style="border-radius: 3rem"
-            >
+            <MegaMenu :model="items" class="p-4 bg-surface-0 shadow-sm">
                 <template #start>
                     <Link :href="'/'">
                         <span
