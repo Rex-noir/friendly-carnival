@@ -3,7 +3,7 @@
         <Dock :model="items" class="md:hidden" position="bottom">
             <template #icon="{ item }">
                 <div
-                    class="hover:text-green-500 flex flex-col items-center cursor-pointer"
+                    class="flex cursor-pointer flex-col items-center hover:text-green-500"
                     @click="components = item.component"
                     :class="
                         components === item.component
@@ -25,10 +25,10 @@
                         @click="components = item.component"
                         :class="
                             item.component === components
-                                ? 'bg-amber-400 hover:bg-amber-300 dark:hover:bg-amber-300 text-zinc-800'
+                                ? 'bg-amber-400 text-zinc-800 hover:bg-amber-300 dark:hover:bg-amber-300'
                                 : ''
                         "
-                        class="p-3 transition-all flex gap-2 rounded-lg duration-300 hover:bg-surface-200 dark:hover:bg-surface-800 cursor-pointer"
+                        class="flex cursor-pointer gap-2 rounded-lg p-3 transition-all duration-300 hover:bg-surface-200 dark:hover:bg-surface-800"
                         v-for="item in items"
                     >
                         <span><i :class="item.icon"></i></span>
@@ -40,10 +40,10 @@
         <div class="hidden md:block">
             <Divider
                 layout="vertical"
-                class="before:!border-surface-300 shadow-lg shadow-slate-700 dark:before:!border-surface-600"
+                class="shadow-lg shadow-slate-700 before:!border-surface-300 dark:before:!border-surface-600"
             ></Divider>
         </div>
-        <div class="pb-32 md:p-10 h-full">
+        <div class="h-full pb-32 md:p-10">
             <component :is="components"></component>
         </div>
     </div>
@@ -71,3 +71,12 @@ const items = shallowRef([
     },
 ]);
 </script>
+<style>
+::-webkit-scrollbar {
+    display: none;
+}
+.html {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none;
+}
+</style>
