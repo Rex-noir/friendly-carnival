@@ -15,6 +15,12 @@ declare module 'ziggy-js' {
             "name": "id",
             "required": true
         }
+    ],
+    "users.ban": [
+        {
+            "name": "id",
+            "required": true
+        }
     ]
 }
 }
