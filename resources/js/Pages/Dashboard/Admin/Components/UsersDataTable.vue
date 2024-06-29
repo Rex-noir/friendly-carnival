@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import DataTable, { DataTableRowClickEvent } from "primevue/datatable";
 import Column from "primevue/column";
-import { User } from "@/types/users.interface";
-import { onMounted, reactive, ref, watch } from "vue";
+import { computed, onMounted, reactive, ref, watch } from "vue";
 import Card from "primevue/card";
 import Button from "primevue/button";
 import InputText from "primevue/inputtext";
@@ -11,6 +10,8 @@ import Spinner from "@/Pages/Components/Spinner.vue";
 import { debounce } from "lodash";
 import axios from "axios";
 import { useConfirm } from "primevue/useconfirm";
+import { UserActions, UserStatus } from "@/types/actions.types";
+import Tag from "primevue/tag";
 
 const confirm = useConfirm();
 const emit = defineEmits<{ (e: "updateTable"): void }>();
@@ -38,24 +39,28 @@ const rowClicked = (e: DataTableRowClickEvent) => {
 const updateEmail = (id: number) => {
     editEmail[id] = !editEmail[id];
     if (!editEmail[id] && emailModel[id]) {
-        handleTableActions(id, "update");
+        handleTableActions(id, UserActions.UPDATE);
     }
 };
-const handleTableActions = async (id: number, action: "update" | "delete") => {
+const handleTableActions = async (id: number, action: UserActions) => {
     try {
         loading[id] = true;
         updateStatus[id] = "";
 
-        if (action === "update") {
+        if (action === UserActions.UPDATE) {
             await UserUtils.update({ id: id, email: emailModel[id] });
             updateStatus[id] = "Updated!";
-        } else {
+        } else if (action === UserActions.DELETE) {
             await UserUtils.delete(id);
             updateStatus[id] = "Deleted!";
             createRefsForTable();
-            updateTableOnDelete(id);
-            emit("updateTable");
+            updateTableOnActions(id, UserActions.DELETE);
+        } else {
+            await UserUtils.ban(id);
+            updateStatus[id] = "Updated!";
+            updateTableOnActions(id, UserActions.BAN);
         }
+        emit("updateTable");
         loading[id] = false;
         debounce(() => (updateStatus[id] = ""), 2000)();
     } catch (error) {
@@ -72,25 +77,51 @@ const handleTableActions = async (id: number, action: "update" | "delete") => {
     }
 };
 
-const updateTableOnDelete = (id: number) => {
+const updateTableOnActions = (id: number, action: UserActions) => {
     const userIndex = (props.users as User[]).findIndex(
         (user) => user.id === id
     );
     if (userIndex !== -1) {
-        props.users.splice(userIndex, 1);
-        expandedRows.value = expandedRows.value.filter(
-            (user) => user.id !== id
-        );
+        switch (action) {
+            case UserActions.DELETE:
+                props.users.splice(userIndex, 1);
+                expandedRows.value = expandedRows.value.filter(
+                    (user) => user.id !== id
+                );
+                break;
+            case UserActions.BAN:
+                (props.users[userIndex] as User).status =
+                    (props.users[userIndex] as User).status ===
+                    UserStatus.BANNED
+                        ? UserStatus.ACTIVE
+                        : UserStatus.BANNED;
+                break;
+            default:
+                break;
+        }
     }
 };
 
+//dialog configuration
 const deleteConfirm = (user: User) => {
     confirm.require({
         message: `This action can't be undone.`,
-        header: `${user.name}`,
-        icon: "pi pi-exclamation-triangle",
+        header: `Delete ${user.name} from Database?`,
+        icon: "pi pi-trash",
         accept: () => {
-            handleTableActions(user.id, "delete");
+            handleTableActions(user.id, UserActions.DELETE);
+        },
+    });
+};
+
+const banConfirm = (user: User) => {
+    confirm.require({
+        header: `Are you sure to ${
+            user.status === UserStatus.BANNED ? "restore" : "Ban"
+        } ${user.name} ?`,
+        icon: "pi pi-ban",
+        accept: () => {
+            handleTableActions(user.id, UserActions.BAN);
         },
     });
 };
@@ -120,7 +151,7 @@ onMounted(() => {
             @row-click="rowClicked"
             tableStyle="min-width: fit-content"
         >
-            <Column field="id" header="Id" style="width: 3%">
+            <Column field="id" header="Id" style="width: 1%">
                 <template #body="row">
                     <span
                         class="font-bold"
@@ -135,11 +166,31 @@ onMounted(() => {
                     >
                 </template>
             </Column>
-            <Column
-                field="name"
-                header="Name"
-                style="width: fit-content"
-            ></Column>
+            <Column field="name" header="Name" style="width: fit-content"
+                ><template #body="row">
+                    <div class="flex gap-1">
+                        <span>{{ row.data.name }}</span>
+                        <div class="hidden sm:flex gap-2">
+                            <Tag
+                                :severity="
+                                    row.data.role === 'admin'
+                                        ? 'warning'
+                                        : 'info'
+                                "
+                                :value="row.data.role"
+                            ></Tag>
+                            <Tag
+                                :value="row.data.status"
+                                :severity="
+                                    row.data.status === 'banned'
+                                        ? 'danger'
+                                        : 'success'
+                                "
+                            ></Tag>
+                        </div>
+                    </div>
+                </template>
+            </Column>
             <Column ripple expander style="width: 5rem">
                 <template #body="row">
                     <span class="material-symbols-outlined">{{
@@ -154,10 +205,34 @@ onMounted(() => {
                 <Card class="!border-none !shadow-none">
                     <template #title
                         ><div
-                            class="grid grid-cols-2 place-content-center items-center"
+                            class="grid grid-cols-2 gap-2 place-content-center items-center"
                         >
-                            <span>{{ user.data.name }}</span>
-                            <div class="justify-self-end">
+                            <span class="col-span-1 row-start-1">
+                                {{ user.data.name }}</span
+                            >
+                            <div
+                                class="sm:hidden flex row-start-2 gap-2 col-start-1"
+                            >
+                                <Tag
+                                    :severity="
+                                        user.data.role === 'admin'
+                                            ? 'warning'
+                                            : 'info'
+                                    "
+                                    :value="user.data.role"
+                                ></Tag>
+                                <Tag
+                                    :value="user.data.status"
+                                    :severity="
+                                        user.data.status === UserStatus.BANNED
+                                            ? 'danger'
+                                            : 'success'
+                                    "
+                                ></Tag>
+                            </div>
+                            <div
+                                class="justify-self-end row-start-2 sm:row-start-1 col-start-2"
+                            >
                                 <span
                                     v-if="updateStatus[user.data.id]"
                                     :class="
@@ -212,8 +287,13 @@ onMounted(() => {
                             <Button
                                 rounded
                                 class="!p-2 col-start-1"
-                                :label="`Ban`"
+                                :label="
+                                    user.data.status === UserStatus.BANNED
+                                        ? 'Restore'
+                                        : 'Ban'
+                                "
                                 severity="warning"
+                                @click="banConfirm(user.data)"
                             />
                             <Button
                                 rounded

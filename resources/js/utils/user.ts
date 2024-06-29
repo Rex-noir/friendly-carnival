@@ -1,4 +1,4 @@
-import { Pagination, User } from "@/types/users.interface";
+import { Pagination } from "@/types/page.types";
 import axios from "axios";
 
 export default class UserUtils {
@@ -63,6 +63,14 @@ export default class UserUtils {
             const response = await axios.delete(
                 route("users.delete", { id: id })
             );
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    static async ban(id: number): Promise<void> {
+        try {
+            const response = await axios.post(route("users.ban", { id: id }));
         } catch (error) {
             throw error;
         }

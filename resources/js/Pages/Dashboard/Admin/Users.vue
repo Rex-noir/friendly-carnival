@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Pagination, User } from "@/types/users.interface";
+import { Pagination } from "@/types/page.types";
 import { onMounted, ref } from "vue";
 import IconField from "primevue/iconfield";
 import InputIcon from "primevue/inputicon";
@@ -18,22 +18,20 @@ let usersData = ref<Pagination<User[]> | null>(null);
 const searchModel = ref();
 
 onMounted(async () => {
-    debounceFetch();
+    fetchData();
 });
 const fetchData = async (url?: string) => {
     try {
         let data;
         data = await UserUtils.index(url);
-        usersData.value = { ...data }; // Create a new object
+        usersData.value = { ...data };
     } catch (error) {
         throw error;
     }
 };
-const debounceFetch = debounce(fetchData, 500);
-
 const loading = ref<boolean>();
 const result = ref<User[] | []>();
-const shouldResetExpandedRows = ref({ update: true });
+const shouldResetExpandedRows = ref(true);
 
 const search = async () => {
     try {
@@ -45,17 +43,16 @@ const search = async () => {
     }
 };
 
-const handleUpdateTable = () => {
+const handleUpdateTable = async () => {
     if (
         usersData.value &&
         usersData.value.links &&
         usersData.value.current_page
     ) {
-        fetchData(
+        await fetchData(
             usersData.value.links[usersData.value.current_page].url as string
         );
-        shouldResetExpandedRows.value.update =
-            !shouldResetExpandedRows.value.update;
+        shouldResetExpandedRows.value = !shouldResetExpandedRows.value;
     }
 };
 
@@ -65,21 +62,22 @@ const debounceSearch = debounce(search, 600);
     <ConfirmDialog>
         <template #container="{ message, acceptCallback, rejectCallback }">
             <div
-                class="flex flex-col items-center p-5 bg-surface-0 dark:bg-surface-900 rounded-md"
+                class="flex flex-col gap-1 items-center p-5 bg-surface-0 dark:bg-surface-900 rounded-md"
             >
                 <div
                     class="rounded-full bg-slate-200 dark:bg-slate-800 text-white dark:text-surface-950 inline-flex justify-center items-center h-[6rem] w-[6rem] -mt-8"
                 >
-                    <i class="pi pi-trash text-5xl text-red-700"></i>
+                    <i :class="message.icon" class="text-5xl text-red-700"></i>
                 </div>
-                <span
-                    >Delete
-                    <span class="font-bold text-lg mb-2 mt-4">{{
-                        message.header
-                    }}</span>
-                    from Database?
+                <span class="text-xl">
+                    {{ message.header }}
                 </span>
-                <Message :closable="false" severity="warn">
+                <Message
+                    v-if="message.message"
+                    :closable="false"
+                    icon="pi pi-exclamation-triangle "
+                    severity="warn"
+                >
                     {{ message.message }}
                 </Message>
 
@@ -91,7 +89,7 @@ const debounceSearch = debounce(search, 600);
                         outlined
                     ></Button>
                     <Button
-                        label="Delete"
+                        label="Proceed"
                         severity="danger"
                         @click="acceptCallback"
                         class="w-[8rem]"
@@ -137,7 +135,7 @@ const debounceSearch = debounce(search, 600);
             </div>
         </div>
         <UsersDataTable
-            :key="shouldResetExpandedRows.update ? 'pulung' : 'malung'"
+            :key="shouldResetExpandedRows ? 'pulung' : 'malung'"
             v-if="usersData"
             :users="usersData.data"
         ></UsersDataTable>
