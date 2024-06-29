@@ -23,13 +23,13 @@ export default {
             "flex",
 
             // Shape & Border
-            "rounded-full",
+            "rounded-md",
 
             // Color
             "bg-surface-100 dark:bg-surface-900 border border-surface-0/20",
 
             // Spacing
-            "p-0",
+            "p-0 px-5",
 
             // Misc
             "pointer-events-auto",
@@ -54,7 +54,7 @@ export default {
     menuitem: ({ props, context, instance }) => ({
         class: [
             // Spacing & Shape
-            "p-1 rounded-md",
+            "p-0 rounded-md",
 
             // Conditional Scaling
             // {
