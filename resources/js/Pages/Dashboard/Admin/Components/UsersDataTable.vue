@@ -166,31 +166,42 @@ onMounted(() => {
                     >
                 </template>
             </Column>
-            <Column field="name" header="Name" style="width: fit-content"
-                ><template #body="row">
-                    <div class="flex gap-1">
-                        <span>{{ row.data.name }}</span>
-                        <div class="hidden sm:flex gap-2">
-                            <Tag
-                                :severity="
-                                    row.data.role === 'admin'
-                                        ? 'warning'
-                                        : 'info'
-                                "
-                                :value="row.data.role"
-                            ></Tag>
-                            <Tag
-                                :value="row.data.status"
-                                :severity="
-                                    row.data.status === 'banned'
-                                        ? 'danger'
-                                        : 'success'
-                                "
-                            ></Tag>
-                        </div>
-                    </div>
-                </template>
-            </Column>
+            <Column field="name" header="Name" class="w-fit"> </Column>
+            <Column
+                class="hidden sm:table-cell"
+                header="Role"
+                ripple
+                style="width: 1rem"
+            >
+                <template #body="row"
+                    ><div class="hidden justify-start sm:flex gap-2 w-full">
+                        <Tag
+                            :severity="
+                                row.data.role === 'admin' ? 'warning' : 'info'
+                            "
+                            class="w-full"
+                            :value="row.data.role"
+                        ></Tag></div></template
+            ></Column>
+            <Column
+                ripple
+                header="Status"
+                class="hidden sm:table-cell"
+                style="width: 2rem"
+            >
+                <template #body="row"
+                    ><div class="hidden sm:flex gap-2 w-full">
+                        <Tag
+                            :value="row.data.status"
+                            class="w-full"
+                            :severity="
+                                row.data.status === 'banned'
+                                    ? 'danger'
+                                    : 'success'
+                            "
+                        ></Tag></div></template
+            ></Column>
+
             <Column ripple expander style="width: 5rem">
                 <template #body="row">
                     <span class="material-symbols-outlined">{{
