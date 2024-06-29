@@ -20,11 +20,22 @@ const form = useForm({
                 form.errors.email
             }}</InlineMessage>
             <FloatLabel>
-                <InputText class="w-full" id="username" v-model="form.email" />
+                <InputText
+                    class="w-full"
+                    id="username"
+                    required
+                    type="email"
+                    v-model="form.email"
+                />
                 <label for="username">Email</label>
             </FloatLabel>
             <FloatLabel>
-                <Password id="password" v-model="form.password" toggleMask />
+                <Password
+                    id="password"
+                    required
+                    v-model="form.password"
+                    toggleMask
+                />
                 <label for="password">Password</label>
             </FloatLabel>
             <div class="flex items-center justify-center">
