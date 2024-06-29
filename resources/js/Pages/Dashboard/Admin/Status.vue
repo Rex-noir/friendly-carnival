@@ -20,7 +20,7 @@ onBeforeUnmount(() => {
     <StatusSkeleton v-if="!realTimeInfo"></StatusSkeleton>
     <div
         v-if="realTimeInfo"
-        class="p-1 pb-20 flex flex-col gap-3 sm:grid sm:grid-cols-3 w-[95%] mx-auto"
+        class="p-1 flex flex-col gap-3 sm:grid sm:grid-cols-3 mx-auto"
     >
         <Card class="border dark:border-slate-700">
             <template #title><span class="font-black">Uptime </span> </template>
