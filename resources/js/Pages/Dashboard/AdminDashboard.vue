@@ -28,7 +28,6 @@
 import { shallowRef } from "vue";
 import Status from "./Admin/Status.vue";
 import Users from "./Admin/Users.vue";
-import Authors from "./Admin/Authors.vue";
 import Dock from "primevue/dock";
 
 const components = shallowRef(Users);
@@ -38,11 +37,6 @@ const items = shallowRef([
         label: "Users",
         icon: "people_alt",
         component: Users,
-    },
-    {
-        label: "Authors",
-        icon: "signature",
-        component: Authors,
     },
     {
         label: "Status",
