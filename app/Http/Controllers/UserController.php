@@ -13,6 +13,9 @@ use function Pest\Laravel\json;
 
 class UserController extends Controller
 {
+    const BANNED = 'banned';
+    const ACTIVE = 'active';
+
     use AuthorizesRequests;
     /**
      * Display a listing of the resource.
@@ -75,7 +78,7 @@ class UserController extends Controller
         //Update
         $userToUpdate->update($validator->validated());
 
-        return response()->json(['message' => "User updated successfully"]);
+        return response()->json(null, 204);
     }
 
     /**
@@ -87,6 +90,19 @@ class UserController extends Controller
         $this->authorize('delete', $userToDelete);
         $userToDelete->delete();
         return response()->json(null, 204);
+    }
+
+    public function ban(User $user, $id)
+    {
+        $userToBan = User::findOrFail($id);
+        $this->authorize('ban', $userToBan);
+
+        if ($userToBan->status === self::BANNED) {
+            $userToBan->update(['status' => self::ACTIVE]); // Change 'active' to the appropriate status
+        } else {
+            $userToBan->update(['status' => self::BANNED]);
+        }
+        return response(null, 204);
     }
 
     /** Search users */
