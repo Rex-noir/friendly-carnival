@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Services\UserService;
+use App\UserRoles;
+use App\UserStatus;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
@@ -13,17 +16,20 @@ use function Pest\Laravel\json;
 
 class UserController extends Controller
 {
-    const BANNED = 'banned';
-    const ACTIVE = 'active';
 
     use AuthorizesRequests;
+    protected $userService;
+
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+    }
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-        return User::paginate(10);
+        return $this->userService->index($request);
     }
 
     /**
@@ -75,9 +81,7 @@ class UserController extends Controller
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors(), 'email' => $userToUpdate->email], 422);
         }
-        //Update
         $userToUpdate->update($validator->validated());
-
         return response()->json(null, 204);
     }
 
@@ -97,10 +101,10 @@ class UserController extends Controller
         $userToBan = User::findOrFail($id);
         $this->authorize('ban', $userToBan);
 
-        if ($userToBan->status === self::BANNED) {
-            $userToBan->update(['status' => self::ACTIVE]); // Change 'active' to the appropriate status
+        if ($userToBan->status === UserStatus::BANNED) {
+            $userToBan->update(['status' => UserStatus::ACTIVE]); // Change 'active' to the appropriate status
         } else {
-            $userToBan->update(['status' => self::BANNED]);
+            $userToBan->update(['status' => UserStatus::BANNED]);
         }
         return response(null, 204);
     }
@@ -110,16 +114,6 @@ class UserController extends Controller
     {
         $input = $request->input('value');
 
-        if (empty($input)) {
-            return collect([]);
-        }
-
-        if (is_numeric($input)) {
-            $user =  User::find($input);
-
-            return $user ? collect([$user]) : collect([]);
-        }
-
-        return  User::where('name', 'like', '%' . $input . '%')->get();
+        return $this->userService->search($input);
     }
 }
