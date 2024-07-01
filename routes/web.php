@@ -24,7 +24,7 @@ Route::get('/dashboard', DashBoardController::class)->name('dashboard')->middlew
 //Routes for all users
 Route::prefix('users')->group(function () {
     Route::post('/search', [UserController::class, 'search'])->name('users.search');
-    Route::post('/index', [UserController::class, 'index'])->name('users.index');
+    Route::get('/index', [UserController::class, 'index'])->name('users.index');
 
     Route::put('/update/{id}', [UserController::class, 'update'])->name('users.update');
     Route::delete('/delete/{id}', [UserController::class, 'destroy'])->name('users.delete');
