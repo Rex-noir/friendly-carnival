@@ -21,14 +21,14 @@
                 <span class="font-bold">Main menu</span>
                 <ul class="flex flex-col gap-3">
                     <li
-                        ripple
+                        v-ripple
                         @click="components = item.component"
                         :class="
                             item.component === components
-                                ? 'bg-amber-400 text-zinc-800 hover:bg-amber-300 dark:hover:bg-amber-300'
+                                ? 'bg-surface-300 hover:bg-amber-300 dark:bg-surface-800 dark:hover:bg-amber-300'
                                 : ''
                         "
-                        class="flex cursor-pointer gap-2 rounded-lg p-3 transition-all duration-300 hover:bg-surface-200 dark:hover:bg-surface-800"
+                        class="flex cursor-pointer gap-2 rounded-lg p-3 transition-all duration-300 hover:bg-surface-200 dark:hover:bg-surface-700"
                         v-for="item in items"
                     >
                         <span><i :class="item.icon"></i></span>
@@ -51,7 +51,6 @@
 
 <script setup lang="ts">
 import { shallowRef } from "vue";
-import Status from "./Admin/Status.vue";
 import Users from "./Admin/Users.vue";
 import Dock from "primevue/dock";
 import Divider from "primevue/divider";
@@ -63,11 +62,6 @@ const items = shallowRef([
         label: "Users",
         icon: "pi pi-users",
         component: Users,
-    },
-    {
-        label: "Status",
-        icon: "pi pi-chart-bar",
-        component: Status,
     },
 ]);
 </script>
