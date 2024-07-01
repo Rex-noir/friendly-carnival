@@ -4,6 +4,8 @@ namespace Tests\Feature;
 
 use App\Models\Role;
 use App\Models\User;
+use App\UserRoles;
+use App\UserStatus;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -20,7 +22,7 @@ class UserUpdateTest extends TestCase
     protected function  setUp(): void
     {
         parent::setUp();
-        $admin = User::factory()->create(['role' => 'admin']);
+        $admin = User::factory()->create(['role' => UserRoles::ADMIN]);
         $this->adminUser = $admin;
     }
 
@@ -52,6 +54,6 @@ class UserUpdateTest extends TestCase
         $user = User::factory()->create();
         $response = $this->actingAs($this->adminUser)->post(route('users.ban', $user->id));
         $response->assertStatus(204);
-        $this->assertDatabaseHas('users', ['id' => $user->id, 'status' => 'banned']);
+        $this->assertDatabaseHas('users', ['id' => $user->id, 'status' => UserStatus::BANNED]);
     }
 }
