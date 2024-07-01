@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { Pagination } from "@/types/page.types";
-import { computed } from "vue";
+import { computed, reactive, watch } from "vue";
 const props = defineProps<{ paginator: Pagination<User[]> }>();
-const { paginator } = props;
+let paginator = reactive(props.paginator);
 
 function isFirstOrLastOrDots(
     index: number,
@@ -21,14 +21,27 @@ const hasMorePages = computed(
 const displayLinks = computed(() =>
     props.paginator.links.filter((link, index) => Number(link.label) === index),
 );
+watch(
+    () => props.paginator,
+    (newPaginator) => {
+        paginator = newPaginator;
+    },
+);
 </script>
 
 <template>
     <div class="flex flex-col items-center justify-center gap-2">
         <div>
             <p>
-                Showing <span class="font-medium">{{ paginator.from }}</span> to
-                <span class="font-medium">{{ paginator.to }}</span> of
+                Showing
+                <span class="font-medium">{{
+                    paginator.from ? paginator.from : "0"
+                }}</span>
+                to
+                <span class="font-medium">{{
+                    paginator.to ? paginator.to : "0"
+                }}</span>
+                of
                 <span class="font-medium">{{ paginator.total }}</span> results
             </p>
         </div>
