@@ -13,6 +13,7 @@ import PaginationT from "@/Pages/Components/PaginationT.vue";
 import ConfirmDialog from "primevue/confirmdialog";
 import Button from "primevue/button";
 import Message from "primevue/message";
+import RoleFilter, { filterConfig } from "@/Pages/Components/RoleFilter.vue";
 
 let usersData = ref<Pagination<User[]> | null>(null);
 const searchModel = ref();
@@ -23,7 +24,7 @@ onMounted(async () => {
 const fetchData = async (url?: string) => {
     try {
         let data;
-        data = await UserUtils.index(url);
+        data = await UserUtils.fetchUsers(url);
         usersData.value = { ...data };
     } catch (error) {
         throw error;
@@ -57,6 +58,15 @@ const handleUpdateTable = async () => {
 };
 
 const debounceSearch = debounce(search, 600);
+
+const filter = async (config: filterConfig) => {
+    try {
+        const data = await UserUtils.fetchUsers(undefined, config);
+        usersData.value = data;
+    } catch (error) {
+        throw error;
+    }
+};
 </script>
 <template>
     <ConfirmDialog>
@@ -108,21 +118,33 @@ const debounceSearch = debounce(search, 600);
         v-if="searchModel && result"
         @click="result = undefined"
     ></div>
-    <div class="card relative p-2">
-        <div class="relative z-10 mb-2">
-            <IconField>
-                <InputIcon>
-                    <Spinner v-if="loading" />
-                </InputIcon>
-                <InputText
-                    placeholder="Search with ID or Name"
-                    v-model="searchModel"
-                    @input="
-                        loading = true;
-                        debounceSearch();
-                    "
-                />
-            </IconField>
+    <div class="card relative p-1">
+        <div class="relative z-10 mb-2 w-full">
+            <div class="flex w-full items-center gap-2">
+                <IconField class="w-full">
+                    <InputIcon>
+                        <Spinner v-if="loading" />
+                    </InputIcon>
+                    <InputText
+                        placeholder="Search with ID or Name"
+                        v-model="searchModel"
+                        @input="
+                            loading = true;
+                            debounceSearch();
+                        "
+                    />
+                </IconField>
+                <RoleFilter
+                    @on-filter="(toFilter) => filter(toFilter)"
+                    class="hidden sm:block"
+                    v-show="!(searchModel && result)"
+                ></RoleFilter>
+            </div>
+            <RoleFilter
+                @on-filter="(toFilter) => filter(toFilter)"
+                class="mt-2 sm:hidden"
+                v-show="!(searchModel && result)"
+            ></RoleFilter>
             <div
                 v-if="result && result.length > 0"
                 class="absolute z-10 mt-2 max-h-[400px] w-full overflow-auto rounded-lg"
@@ -143,7 +165,7 @@ const debounceSearch = debounce(search, 600);
     </div>
     <div class="flex w-full justify-center overflow-auto" v-if="usersData">
         <PaginationT
-            :key="usersData.current_page"
+            :key="usersData.total"
             @paginate="(url: string) => fetchData(url)"
             :paginator="usersData"
         ></PaginationT>
@@ -151,7 +173,9 @@ const debounceSearch = debounce(search, 600);
 </template>
 <style scoped>
 .overlay {
-    position: absolute;
+    position: fixed; /* Changed from absolute to fixed */
+    top: 0;
+    left: 0;
     z-index: 10;
     width: 100vw;
     height: 100vh;
